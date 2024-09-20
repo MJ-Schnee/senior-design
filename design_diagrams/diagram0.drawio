@@ -1,0 +1,25 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" version="24.7.14">
+  <diagram name="Page-1" id="pSw8x3C9M-zYgT5TNihh">
+    <mxGraphModel dx="1163" dy="589" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="l0WcsWSsG9v-g_a3aXnf-28" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="l0WcsWSsG9v-g_a3aXnf-25" target="l0WcsWSsG9v-g_a3aXnf-26">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l0WcsWSsG9v-g_a3aXnf-25" value="&lt;h1&gt;Input&lt;/h1&gt;&lt;div&gt;Mouse and keyboard control for hero movement and action selection&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Game setup data including hero selections and adventure settings&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Dungeon environment data of procedurally generated dungeon tiles, enemy stats, and encounter setup information&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Real-time multiplayer communication between players if game is in multiplayer mode&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Parameters for AI/game actions (monster spawning, trap activation, environment hazards)&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=center;" vertex="1" parent="1">
+          <mxGeometry x="20" y="150" width="180" height="410" as="geometry" />
+        </mxCell>
+        <mxCell id="l0WcsWSsG9v-g_a3aXnf-29" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="l0WcsWSsG9v-g_a3aXnf-26" target="l0WcsWSsG9v-g_a3aXnf-27">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l0WcsWSsG9v-g_a3aXnf-26" value="&lt;h1&gt;Process&lt;/h1&gt;&lt;div&gt;Processing player inputs and translating them into in-game actions (movement, combat, UI)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Calculating outcomes for actions such as dice rolls, stat updates, and item usage&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Controlling behavior of monsters and traps based on player actions or predefined logic&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Synchronization of states between connected players&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Event system of triggering in-game events like finding treasure, spawning/killing enemies, and trap activation&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Generating real-time visual and audio feedback for user actions and game state changes&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="150" width="180" height="410" as="geometry" />
+        </mxCell>
+        <mxCell id="l0WcsWSsG9v-g_a3aXnf-27" value="&lt;h1&gt;Output&lt;/h1&gt;&lt;div&gt;Visual feedback for updated dungeon tiles, hero movements, combat outcomes, enemy spawns, and rendering objects&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Audio feedback for sound effects, and background music which respond to in-game actions such as attacks, pickups, spawns, and game state changes&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Sending/receiving messages or game state updates between players in multiplayer sessions&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;In-game alerts for visual/sound notifications of game state changes&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;UI updates to display hero stats, inventory, available actions, and overview of the current dungeon&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="540" y="150" width="180" height="410" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
