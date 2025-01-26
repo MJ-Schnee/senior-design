@@ -3,7 +3,7 @@
 | Task                                                                  | Hours: MJ | Hours: Nick | Hours: Freja |
 | --------------------------------------------------------------------- | --------- | ----------- | ------------ |
 | Set up and configure development environment                          | 5         | 5           | 5            |
-| Create basic scene with moveable player and input handling            | 3         | 0           | 0            |
+| Create basic scene with moveable player and input handling            | 0         | 3           | 3            |
 | Create scripts for handling game states                               | 0         | 3           | 0            |
 | Develop basic combat system                                           | 0         | 6           | 0            |
 | Implement procedural dungeon generation with enemy and loot placement | 5         | 0           | 0            |
