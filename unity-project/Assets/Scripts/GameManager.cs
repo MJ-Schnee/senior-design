@@ -14,11 +14,13 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
         DontDestroyOnLoad(this);
+
+        TurnOrder = new();
     }
 
     public GameObject EndTurn()
     {
-        GameObject nextTurn = TurnOrder.GetNextTurn();
+        GameObject nextTurn = TurnOrder.StartNextTurn();
         OnEndTurn(nextTurn);
         return nextTurn;
     }

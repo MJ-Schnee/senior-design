@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public class Node<T>
 {
     public T Data;
@@ -78,18 +80,30 @@ public class CircularLinkedList<T>
         return false; // Node not found
     }
 
-    public T GetNextTurn()
+    public T StartNextTurn()
     {
-        current ??= head; // Start from first player
+        head = head.Next;
 
-        T data = current.Data;
-        current = current.Next; // Move to the next player
-
-        return data;
+        return head.Data;
     }
 
     public T GetCurrentTurn()
     {
         return head.Data;
+    }
+
+    public List<T> GetTurnOrder()
+    {
+        List<T> turnOrder = new();
+
+        Node<T> current = head;
+
+        do
+        {
+            turnOrder.Add(current.Data);
+            current = current.Next;
+        } while (current != head);
+
+        return turnOrder;
     }
 }
