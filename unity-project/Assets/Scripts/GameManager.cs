@@ -16,6 +16,14 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this);
 
         TurnOrder = new();
+
+        
+        // Initial test "players"
+        for (var i = 0; i < 4; i++)
+        {
+            GameObject newObj = new($"Player {i}");
+            AddTurn(newObj);
+        }
     }
 
     public GameObject EndTurn()
