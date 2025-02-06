@@ -270,7 +270,7 @@ GameObject:
   - component: {fileID: 177424195}
   - component: {fileID: 177424199}
   m_Layer: 5
-  m_Name: MainCanvas
+  m_Name: GuiCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1639,7 +1639,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54f88a1c26b5d204bac911deb66a5088, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textComponent: {fileID: 1969930752}
+  TextComponent: {fileID: 1969930752}
 --- !u!114 &803809977
 MonoBehaviour:
   m_ObjectHideFlags: 0
