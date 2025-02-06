@@ -33,6 +33,11 @@ public class GameManager : MonoBehaviour
         return nextTurn;
     }
 
+    public void CallEndTurn()
+    {
+        EndTurn();
+    }
+
     public void AddTurn(GameObject newPlayer)
     {
         TurnOrder.Add(newPlayer);
