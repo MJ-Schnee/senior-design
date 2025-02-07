@@ -1,38 +1,39 @@
-using System;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEditor;
 
 
 public class Player : MonoBehaviour
 {
-    public int turn;
-    public bool myTurn;
-    private Renderer cubeRenderer;
+    private bool isMyTurn;
 
-    // Start is called before the first frame update
-    void Start()
+    private Renderer turnIdentifierRenderer;
+
+    void Awake()
     {
-        myTurn = true;
-       GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-       cylinder.transform.position = this.transform.position;
-       cylinder.transform.position += new Vector3(0,-.5f,0);
-       cylinder.transform.localScale += new Vector3(.5f,-.95f,.5f);
-       // Get the Renderer component from the new cube
-       cubeRenderer = cylinder.GetComponent<Renderer>();
-
+        GameManager.OnEndTurn += OnEndTurn;
     }
 
-    // Update is called once per frame
-    void Update()
+    void Start()
     {
-        if(myTurn)
+       GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+       cylinder.transform.position = transform.position;
+       cylinder.transform.position += new Vector3(0,-.5f,0);
+       cylinder.transform.localScale += new Vector3(.5f,-.95f,.5f);
+       
+       // Get the Renderer component from the new cube
+       turnIdentifierRenderer = cylinder.GetComponent<Renderer>();
+    }
+
+    void OnEndTurn(Player nextPlayer)
+    {
+        if (nextPlayer == this)
         {
-            cubeRenderer.material.SetColor("_Color", Color.green);
+            isMyTurn = true;
+            turnIdentifierRenderer.material.SetColor("_Color", Color.green);
         }
         else
         {
-            cubeRenderer.material.SetColor("_Color", Color.gray);
+            isMyTurn = false;
+            turnIdentifierRenderer.material.SetColor("_Color", Color.gray);
         }
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -31,7 +30,7 @@ public class UiManager : MonoBehaviour
         UpdateUpNextPanel();
     }
 
-    void UpdatePlayerPanel(GameObject player)
+    void UpdatePlayerPanel(Player player)
     {
         
         int playerNum = int.Parse(player.name[7..]);
@@ -71,7 +70,7 @@ public class UiManager : MonoBehaviour
         }
     }
 
-    void HandleEndTurn(GameObject nextTurnPlayer)
+    void HandleEndTurn(Player nextTurnPlayer)
     {
         UpdatePlayerPanel(nextTurnPlayer);
         UpdateUpNextPanel();

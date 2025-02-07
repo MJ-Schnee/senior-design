@@ -546,6 +546,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be121193ce7665d4c9ef5b11128be874, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InitialPlayerList:
+  - {fileID: 796980625}
 --- !u!4 &289611107
 Transform:
   m_ObjectHideFlags: 0
@@ -1482,7 +1484,7 @@ GameObject:
   - component: {fileID: 796980626}
   - component: {fileID: 796980625}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Player 1
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1500,7 +1502,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16f8b1e632b400c4bac15476e33c60fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turn: 1
   myTurn: 0
 --- !u!65 &796980626
 BoxCollider:

@@ -1,14 +1,18 @@
 using System;
 using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public CircularLinkedList<GameObject> TurnOrder;
+    public List<Player> InitialPlayerList;
 
-    public static event Action<GameObject> OnEndTurn;
+    public CircularLinkedList<Player> TurnOrder;
+
+    public static event Action<Player> OnEndTurn;
 
     public void Awake()
     {
@@ -17,18 +21,27 @@ public class GameManager : MonoBehaviour
 
         TurnOrder = new();
 
-        
-        // Initial test "players"
-        for (var i = 0; i < 4; i++)
+        foreach (Player player in InitialPlayerList)
         {
-            GameObject newObj = new($"Player {i}");
-            AddTurn(newObj);
+            AddTurn(player);
         }
     }
 
-    public GameObject EndTurn()
+    void Start()
     {
-        GameObject nextTurn = TurnOrder.StartNextTurn();
+        StartCoroutine(StartFirstTurn());
+    }
+
+    IEnumerator StartFirstTurn()
+    {
+        // Wait for everything to load
+        yield return new WaitForEndOfFrame();
+        OnEndTurn(TurnOrder.GetCurrentTurn());
+    }
+
+    public Player EndTurn()
+    {
+        Player nextTurn = TurnOrder.StartNextTurn();
         OnEndTurn(nextTurn);
         return nextTurn;
     }
@@ -38,12 +51,12 @@ public class GameManager : MonoBehaviour
         EndTurn();
     }
 
-    public void AddTurn(GameObject newPlayer)
+    public void AddTurn(Player newPlayer)
     {
         TurnOrder.Add(newPlayer);
     }
 
-    public bool RemoveTurn(GameObject removedPlayer)
+    public bool RemoveTurn(Player removedPlayer)
     {
         return TurnOrder.Remove(removedPlayer);
     }
