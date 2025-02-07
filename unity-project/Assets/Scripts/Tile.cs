@@ -6,6 +6,8 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 {
     public bool IsHighlighted;
 
+    public bool IsWalkable = true;
+
     [SerializeField]
     private List<Renderer> renderers;
 

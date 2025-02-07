@@ -1,5 +1,5 @@
+using System.Collections.Generic;
 using UnityEngine;
-
 
 public class Player : MonoBehaviour
 {
@@ -36,6 +36,23 @@ public class Player : MonoBehaviour
         {
             isMyTurn = false;
             turnIdentifierRenderer.material.SetColor("_Color", Color.gray);
+        }
+    }
+
+    public void MoveTo(Transform newTransform)
+    {
+        (int, int) startTileLoc = ((int)transform.position.x, (int)transform.position.z);
+        (int, int) endTileLoc = ((int)newTransform.position.x, (int)newTransform.position.z);
+        List<GameObject> tilePath = TileGridManager.Instance.FindRoute(startTileLoc, endTileLoc);
+        
+        // Draw line for debug path
+        for (int i = 0; i < tilePath.Count - 1; i++)
+        {
+            Vector3 startTile = tilePath[i].transform.position;
+            startTile.y += 1;
+            Vector3 endTile = tilePath[i + 1].transform.position;
+            endTile.y += 1;
+            Debug.DrawLine(startTile, endTile, Color.red, 2.0f);
         }
     }
 }

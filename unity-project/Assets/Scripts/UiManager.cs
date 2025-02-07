@@ -132,15 +132,13 @@ public class UiManager : MonoBehaviour
         {
             if (tileClicked.IsHighlighted)
             {
+                uiState = UiState.PerformingAction;
+                TileGridManager.Instance.UnhighlightAllTiles();
 
+                currentPlayer.MoveTo(tileClicked.gameObject.transform);
+
+                uiState = UiState.Idle;
             }
-
-            uiState = UiState.PerformingAction;
-            TileGridManager.Instance.UnhighlightAllTiles();
-
-            currentPlayer.transform.position = tileClicked.transform.position;
-
-            uiState = UiState.Idle;
         }
     }
 }
