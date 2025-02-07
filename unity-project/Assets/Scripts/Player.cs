@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public int PlayerSpeed;
+
     private bool isMyTurn;
 
     private Renderer turnIdentifierRenderer;

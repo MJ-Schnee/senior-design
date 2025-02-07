@@ -1,12 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
-
 public class TileGridManager : MonoBehaviour
 {
+    public static TileGridManager Instance;
+
     public GameObject tilePrefab;
     public Dictionary<int,Dictionary<int,GameObject>> tileGrid = new Dictionary<int,Dictionary<int,GameObject>>();
     private int min_x = -30;
@@ -15,7 +13,19 @@ public class TileGridManager : MonoBehaviour
     private int max_y = 30;
     private List<GameObject> highlightedTiles = new List<GameObject>();
 
-    public void highlightTilesRadius(int x_cen, int y_cen, int radius)
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
+    public void HighlightTilesRadius(int x_cen, int y_cen, int radius)
     {
         for (int i = Mathf.Max(min_x, x_cen - radius); (i <= max_x) && (i < (x_cen + radius)); i++)
         {
@@ -23,21 +33,21 @@ public class TileGridManager : MonoBehaviour
             {
                 float dist = Vector3.Distance(new Vector3(x_cen,0,y_cen), new Vector3(i,0,j));
                 if (dist < radius) {
-                    tileGrid[i][j].GetComponent<Highlight>()?.ToggleHighlight(true);
+                    tileGrid[i][j].GetComponent<Tile>()?.ToggleHighlight(true);
                     highlightedTiles.Add(tileGrid[i][j]);
                 }
             }
         }
     }
-    public void unhighlightAllTiles()
+    public void UnhighlightAllTiles()
     {
         foreach (GameObject tile in highlightedTiles)
         {
-            tile.GetComponent<Highlight>()?.ToggleHighlight(false);
+            tile.GetComponent<Tile>()?.ToggleHighlight(false);
         }
+        highlightedTiles.Clear();
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         // Instantiate tiles around 0,0,0 in a 15x15 grid
@@ -50,22 +60,6 @@ public class TileGridManager : MonoBehaviour
                 GameObject tile = Instantiate(tilePrefab, new Vector3(i,0,j), Quaternion.identity);
                 tileGrid[i].Add(j, tile);
             }
-        }
-        this.highlightTilesRadius(10,0,8);
-    }
-
-    
-    // CODE FOR DEMONSTRATION, REMOVE THIS AND USE "highlightTilesRadius and unhighlightALLTiles eslewhere"
-    Ray ray;
-    RaycastHit hit;
-
-    void Update() {
-        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if(Physics.Raycast(ray, out hit))
-        {
-            this.unhighlightAllTiles();
-            Vector3 point = hit.collider.transform.position;
-            this.highlightTilesRadius((int)point.x,(int)point.z,8);
         }
     }
 }

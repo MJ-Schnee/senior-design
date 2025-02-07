@@ -1,10 +1,19 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UiManager : MonoBehaviour
 {
+    enum UiState
+    {
+        Idle,
+        PerformingAction,
+        Moving,
+    }
+
+    public static UiManager Instance;
 
     public GameObject TurnIconPrefab;
 
@@ -12,16 +21,30 @@ public class UiManager : MonoBehaviour
 
     [SerializeField] Image playerImage;
 
-    [SerializeField] TMP_Text playerName, playerAc, playerHp_max, playerHp_curr;
+    [SerializeField] TMP_Text playerName, playerAc, playerHp_max, playerHp_curr, playerSpeed;
 
     List<GameObject> turnIcons;
 
+    private Player currentPlayer;
+
+    private UiState uiState;
+
     void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+
         turnIcons = new();
+
+        uiState = UiState.Idle;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         GameManager.OnEndTurn += HandleEndTurn;
@@ -40,6 +63,7 @@ public class UiManager : MonoBehaviour
         playerAc.text = "12";
         playerHp_max.text = "20";
         playerHp_curr.text = "20";
+        playerSpeed.text = player.PlayerSpeed.ToString();
     }
 
     void UpdateUpNextPanel()
@@ -74,5 +98,49 @@ public class UiManager : MonoBehaviour
     {
         UpdatePlayerPanel(nextTurnPlayer);
         UpdateUpNextPanel();
+        currentPlayer = nextTurnPlayer;
+    }
+
+    public void OnMoveButtonClick()
+    {
+        if (uiState == UiState.Moving)
+        {
+            uiState = UiState.Idle;
+        }
+        else
+        {
+            uiState = UiState.Moving;
+        }
+
+        if (uiState == UiState.Moving)
+        {
+            TileGridManager.Instance.HighlightTilesRadius(
+                (int)currentPlayer.transform.position.x,
+                (int)currentPlayer.transform.position.z,
+                currentPlayer.PlayerSpeed
+            );
+        }
+        else
+        {
+            TileGridManager.Instance.UnhighlightAllTiles();
+        }
+    }
+
+    public void HandleTileClick(Tile tileClicked)
+    {
+        if (uiState == UiState.Moving)
+        {
+            if (tileClicked.IsHighlighted)
+            {
+
+            }
+
+            uiState = UiState.PerformingAction;
+            TileGridManager.Instance.UnhighlightAllTiles();
+
+            currentPlayer.transform.position = tileClicked.transform.position;
+
+            uiState = UiState.Idle;
+        }
     }
 }
