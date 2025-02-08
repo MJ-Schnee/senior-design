@@ -58,8 +58,7 @@ public class UiManager : MonoBehaviour
     {
         
         int playerNum = int.Parse(player.name[7..]);
-        float playerColorPoint = playerNum * 60 / 255.0f;
-        playerImage.color = new Color(playerColorPoint, playerColorPoint, playerColorPoint);
+        playerImage.color = player.gameObject.GetComponent<Renderer>().material.color;
         playerName.text = $"Player {playerNum}";
         playerAc.text = "12";
         playerHp_max.text = "20";
@@ -88,8 +87,7 @@ public class UiManager : MonoBehaviour
             icon.TryGetComponent(out Image iconImage);
             int playerNum = int.Parse(player.name[7..]);
             icon.name = $"Player {playerNum} icon ({i})";
-            float playerColorPoint = playerNum * 60 / 255.0f;
-            iconImage.color = new Color(playerColorPoint, playerColorPoint, playerColorPoint);
+            iconImage.color = player.gameObject.GetComponent<Renderer>().material.color;
 
             turnIcons.Add(icon);
         }
