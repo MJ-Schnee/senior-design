@@ -58,6 +58,6 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        UiManager.Instance.HandleTileClick(this);
+        StartCoroutine(UiManager.Instance.HandleTileClick(this));
     }
 }

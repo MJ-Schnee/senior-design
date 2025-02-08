@@ -41,21 +41,22 @@ public class TileGridManager : MonoBehaviour
         }
     }
 
-    public void HighlightTilesRadius(int x_cen, int y_cen, int radius)
+    public void HighlightReachableTiles(int x_cen, int y_cen, int range)
     {
-        for (int i = x_cen - radius; i < x_cen + radius; i++)
+        if (range == 0)
         {
-            for (int j = y_cen - radius; j < y_cen + radius; j++)
+            return;
+        }
+
+        for (int i = x_cen - range; i <= x_cen + range; i++)
+        {
+            for (int j = y_cen - range; j <= y_cen + range; j++)
             {
-                float dist = Vector3.Distance(new Vector3(x_cen, 0, y_cen), new Vector3(i, 0, j));
-                if (dist < radius) {
-                    TileGrid_coord.TryGetValue((i, j), out GameObject tile);
-                    tile.TryGetComponent(out Tile tileComponent);
-                    if (tileComponent.IsWalkable)
-                    {
-                        tileComponent.ToggleHighlight(true);
-                        highlightedTiles.Add(tile);
-                    }
+                TileGrid_coord.TryGetValue((i, j), out GameObject tile);
+                if (tile != null && tile.TryGetComponent(out Tile tileComponent) && tileComponent.IsWalkable)
+                {
+                    tileComponent.ToggleHighlight(true);
+                    highlightedTiles.Add(tile);
                 }
             }
         }

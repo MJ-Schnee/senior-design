@@ -1,7 +1,8 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UiManager : MonoBehaviour
@@ -114,10 +115,10 @@ public class UiManager : MonoBehaviour
 
         if (uiState == UiState.Moving)
         {
-            TileGridManager.Instance.HighlightTilesRadius(
-                (int)currentPlayer.transform.position.x,
-                (int)currentPlayer.transform.position.z,
-                currentPlayer.PlayerSpeed
+            TileGridManager.Instance.HighlightReachableTiles(
+                (int)Math.Round(currentPlayer.transform.position.x),
+                (int)Math.Round(currentPlayer.transform.position.z),
+                currentPlayer.RemainingSpeed
             );
         }
         else
@@ -126,7 +127,7 @@ public class UiManager : MonoBehaviour
         }
     }
 
-    public void HandleTileClick(Tile tileClicked)
+    public IEnumerator HandleTileClick(Tile tileClicked)
     {
         if (uiState == UiState.Moving)
         {
@@ -135,7 +136,8 @@ public class UiManager : MonoBehaviour
                 uiState = UiState.PerformingAction;
                 TileGridManager.Instance.UnhighlightAllTiles();
 
-                currentPlayer.MoveTo(tileClicked.gameObject.transform);
+                // Keep UI in state until coroutine ends
+                yield return StartCoroutine(currentPlayer.MoveTo(tileClicked.gameObject.transform));
 
                 uiState = UiState.Idle;
             }

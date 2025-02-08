@@ -1,9 +1,12 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     public int PlayerSpeed;
+
+    public int RemainingSpeed;
 
     private bool isMyTurn;
 
@@ -31,6 +34,7 @@ public class Player : MonoBehaviour
         {
             isMyTurn = true;
             turnIdentifierRenderer.material.SetColor("_Color", Color.green);
+            RemainingSpeed = PlayerSpeed;
         }
         else
         {
@@ -39,8 +43,11 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void MoveTo(Transform newTransform)
+    public IEnumerator MoveTo(Transform newTransform)
     {
+        float walkSpeed = 7.0f;
+        float turnSpeed = 10.0f;
+
         (int, int) startTileLoc = ((int)transform.position.x, (int)transform.position.z);
         (int, int) endTileLoc = ((int)newTransform.position.x, (int)newTransform.position.z);
         List<GameObject> tilePath = TileGridManager.Instance.FindRoute(startTileLoc, endTileLoc);
@@ -53,6 +60,36 @@ public class Player : MonoBehaviour
             Vector3 endTile = tilePath[i + 1].transform.position;
             endTile.y += 1;
             Debug.DrawLine(startTile, endTile, Color.red, 2.0f);
+        }
+
+        // Move player along path
+        if (tilePath != null && tilePath.Count > 0)
+        {
+            RemainingSpeed -= tilePath.Count;
+            foreach (GameObject tile in tilePath)
+            {
+                Vector3 targetPosition = tile.transform.position;
+                targetPosition.y = transform.position.y;
+
+                // Rotation
+                Vector3 direction = (targetPosition - transform.position).normalized;
+                if (direction != Vector3.zero)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+                    while (Quaternion.Angle(transform.rotation, targetRotation) > 0.1f)
+                    {
+                        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+                        yield return null;
+                    }
+                }
+
+                // Position
+                while (Vector3.Distance(transform.position, targetPosition) > 0.1f)
+                {
+                    transform.position = Vector3.MoveTowards(transform.position, targetPosition, walkSpeed * Time.deltaTime);
+                    yield return null;
+                }
+            }
         }
     }
 }
