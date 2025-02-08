@@ -1,12 +1,16 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Highlight : MonoBehaviour
+public class Tile : MonoBehaviour, IPointerClickHandler
 {
-    //we assign all the renderers here through the inspector
+    public bool IsHighlighted;
+
+    public bool IsWalkable = true;
+
     [SerializeField]
     private List<Renderer> renderers;
+
     [SerializeField]
     private Color color = Color.white;
 
@@ -16,6 +20,8 @@ public class Highlight : MonoBehaviour
     //Gets all the materials from each renderer
     private void Awake()
     {
+        IsHighlighted = false;
+
         materials = new List<Material>();
         foreach (var renderer in renderers)
         {
@@ -25,9 +31,11 @@ public class Highlight : MonoBehaviour
         }
     }
 
-    public void ToggleHighlight(bool val)
+    public void ToggleHighlight(bool isHighlighted)
     {
-        if (val)
+        IsHighlighted = isHighlighted;
+
+        if (isHighlighted)
         {
             foreach (var material in materials)
             {
@@ -46,5 +54,10 @@ public class Highlight : MonoBehaviour
                 material.DisableKeyword("_EMISSION");
             }
         }
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        StartCoroutine(UiManager.Instance.HandleTileClick(this));
     }
 }
