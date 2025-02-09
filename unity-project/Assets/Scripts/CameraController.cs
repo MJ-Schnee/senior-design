@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    public static CameraController Instance;
+
     [SerializeField]
     private float
         baseMoveSpeed = 10f,
@@ -16,6 +18,15 @@ public class CameraController : MonoBehaviour
 
     void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+
         cam = Camera.main;
     }
 
@@ -43,5 +54,15 @@ public class CameraController : MonoBehaviour
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         cam.orthographicSize -= scroll * zoomSpeed;
         cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
+    }
+
+    public void CenterObject(GameObject focalPoint)
+    {
+        Vector3 newPos = focalPoint.transform.position;
+        newPos.x -= 20;
+        newPos.y = 30;
+        newPos.z -= 20;
+        
+        cam.transform.position = newPos;
     }
 }

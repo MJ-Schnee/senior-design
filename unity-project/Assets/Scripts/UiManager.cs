@@ -52,11 +52,13 @@ public class UiManager : MonoBehaviour
         
         UpdatePlayerPanel(GameManager.Instance.TurnOrder.GetCurrentTurn());
         UpdateUpNextPanel();
+
+        Button playerImageButton = playerImage.GetComponent<Button>();
+        playerImageButton.onClick.AddListener(() => CameraController.Instance.CenterObject(currentPlayer.gameObject));
     }
 
     void UpdatePlayerPanel(Player player)
     {
-        
         int playerNum = int.Parse(player.name[7..]);
         playerImage.color = player.IconColor;
         playerName.text = $"Player {playerNum}";
@@ -82,6 +84,9 @@ public class UiManager : MonoBehaviour
         {
             var player = turnOrder[i % turnOrder.Count];
             GameObject icon = Instantiate(TurnIconPrefab, UpNextPanel);
+            
+            Button iconButton = icon.GetComponent<Button>();
+            iconButton.onClick.AddListener(() => CameraController.Instance.CenterObject(player.gameObject));
 
             // Example coloring for different players
             icon.TryGetComponent(out Image iconImage);
