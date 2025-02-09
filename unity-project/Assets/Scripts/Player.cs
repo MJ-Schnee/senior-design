@@ -4,29 +4,24 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public Color IconColor;
+
     public int PlayerSpeed;
 
     public int RemainingSpeed;
 
-    private bool isMyTurn;
+    public Renderer TurnIdentifierRenderer;
 
-    private Renderer turnIdentifierRenderer;
+    public Material ActiveTurnMaterial, InactiveTurnMaterial;
+
+    private bool isMyTurn = false;
+
+    private Animator animator;
 
     void Awake()
     {
         GameManager.OnEndTurn += OnEndTurn;
-    }
-
-    void Start()
-    {
-        GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        cylinder.transform.parent = transform;
-        cylinder.transform.position = transform.position;
-        cylinder.transform.position += new Vector3(0,-.5f,0);
-        cylinder.transform.localScale += new Vector3(.5f,-.95f,.5f);
-        
-        // Get the Renderer component from the new cube
-        turnIdentifierRenderer = cylinder.GetComponent<Renderer>();
+        animator = GetComponent<Animator>();
     }
 
     void OnEndTurn(Player nextPlayer)
@@ -34,13 +29,13 @@ public class Player : MonoBehaviour
         if (nextPlayer == this)
         {
             isMyTurn = true;
-            turnIdentifierRenderer.material.SetColor("_Color", Color.green);
+            TurnIdentifierRenderer.material = ActiveTurnMaterial;
             RemainingSpeed = PlayerSpeed;
         }
         else
         {
             isMyTurn = false;
-            turnIdentifierRenderer.material.SetColor("_Color", Color.gray);
+            TurnIdentifierRenderer.material = InactiveTurnMaterial;
         }
     }
 
@@ -64,6 +59,7 @@ public class Player : MonoBehaviour
         }
 
         // Move player along path
+        animator.SetBool("IsMoving", true);
         if (tilePath != null && tilePath.Count > 0)
         {
             RemainingSpeed -= tilePath.Count;
@@ -92,5 +88,6 @@ public class Player : MonoBehaviour
                 }
             }
         }
+        animator.SetBool("IsMoving", false);
     }
 }
