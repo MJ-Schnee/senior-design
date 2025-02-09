@@ -13,6 +13,7 @@ Our senior design project will be an online virtual board game. The rules and me
 
 ## Table of Contents
 
+0. [User Manual](./unity-project/README.md)
 1. [Team Names, Project Abstract and Description](./README.md#senior-design)
 2. [User Stories and Design Diagrams (Assignment #4)](./design_diagrams/)
    - [User Stories](./design_diagrams/user_stories.md)
