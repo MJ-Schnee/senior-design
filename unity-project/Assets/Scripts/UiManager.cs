@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UiManager : MonoBehaviour
@@ -20,15 +21,56 @@ public class UiManager : MonoBehaviour
 
     public Transform UpNextPanel;
 
-    [SerializeField] Image playerImage;
+    [Header("Player Panel Stats")]
+    [SerializeField]
+    Image playerImage;
 
-    [SerializeField] TMP_Text playerName, playerAc, playerHp_max, playerHp_curr, playerSpeed;
+    [SerializeField]
+    TMP_Text playerName;
+    
+    [SerializeField]
+    TMP_Text playerAc;
+    
+    [SerializeField]
+    TMP_Text playerHp_max;
+    
+    [SerializeField]
+    TMP_Text playerHp_curr;
+    
+    [SerializeField]
+    TMP_Text playerSpeed;
+
+    [Header("Player Inspector Stats")]
+    [SerializeField]
+    GameObject otherPlayerStats;
+
+    [SerializeField]
+    Image otherPlayerImage;
+
+    [SerializeField]
+    TMP_Text otherPlayerName;
+    
+    [SerializeField]
+    TMP_Text otherPlayerAc;
+    
+    [SerializeField]
+    TMP_Text otherPlayerHp_max;
+    
+    [SerializeField]
+    TMP_Text otherPlayerHp_curr;
+    
+    [SerializeField]
+    TMP_Text otherPlayerSpeed;
 
     List<GameObject> turnIcons;
 
     private Player currentPlayer;
 
     private UiState uiState;
+    
+    public float InspectorTimerSec = 0.5f;
+
+    public IEnumerator InspectorCoroutine;
 
     void Awake()
     {
@@ -59,13 +101,12 @@ public class UiManager : MonoBehaviour
 
     void UpdatePlayerPanel(Player player)
     {
-        int playerNum = int.Parse(player.name[7..]);
         playerImage.color = player.IconColor;
-        playerName.text = $"Player {playerNum}";
-        playerAc.text = "12";
-        playerHp_max.text = "20";
-        playerHp_curr.text = "20";
-        playerSpeed.text = player.PlayerSpeed.ToString();
+        playerName.text = player.name;
+        playerAc.text = player.PlayerAc.ToString("D2");
+        playerHp_max.text = player.PlayerHp_max.ToString("D2");
+        playerHp_curr.text = player.PlayerHp_curr.ToString("D2");
+        playerSpeed.text = player.PlayerSpeed.ToString("D2");
     }
 
     void UpdateUpNextPanel()
@@ -82,11 +123,29 @@ public class UiManager : MonoBehaviour
         int maxIcons = 18;
         for (int i = 0; i < maxIcons; i++)
         {
-            var player = turnOrder[i % turnOrder.Count];
+            Player player = turnOrder[i % turnOrder.Count];
             GameObject icon = Instantiate(TurnIconPrefab, UpNextPanel);
-            
+
+            // Center camera on icon player
             Button iconButton = icon.GetComponent<Button>();
             iconButton.onClick.AddListener(() => CameraController.Instance.CenterObject(player.gameObject));
+
+            // Show player stats on icon hover
+            EventTrigger iconEventTrigger = icon.GetComponent<EventTrigger>();
+            EventTrigger.Entry iconPointerEnter = new(){ eventID = EventTriggerType.PointerEnter };
+            iconPointerEnter.callback.AddListener((data) =>
+            {
+                InspectorCoroutine = UpdatePlayerInspector(player);
+                StartCoroutine(InspectorCoroutine);
+            });
+            iconEventTrigger.triggers.Add(iconPointerEnter);
+            EventTrigger.Entry iconPointerExit = new(){ eventID = EventTriggerType.PointerExit };
+            iconPointerExit.callback.AddListener((data) =>
+            {
+                StopCoroutine(InspectorCoroutine);
+                HidePlayerInspector();
+            });
+            iconEventTrigger.triggers.Add(iconPointerExit);
 
             // Example coloring for different players
             icon.TryGetComponent(out Image iconImage);
@@ -145,5 +204,30 @@ public class UiManager : MonoBehaviour
                 uiState = UiState.Idle;
             }
         }
+    }
+
+    public IEnumerator UpdatePlayerInspector(Player otherPlayer)
+    {
+        yield return new WaitForSecondsRealtime(InspectorTimerSec);
+
+        if (currentPlayer == otherPlayer)
+        {
+            otherPlayerStats.SetActive(false);
+            yield return null;
+        }
+
+        otherPlayerImage.color = otherPlayer.IconColor;
+        otherPlayerName.text = otherPlayer.name;
+        otherPlayerAc.text = otherPlayer.PlayerAc.ToString("D2");
+        otherPlayerHp_max.text = otherPlayer.PlayerHp_max.ToString("D2");
+        otherPlayerHp_curr.text = otherPlayer.PlayerHp_curr.ToString("D2");
+        otherPlayerSpeed.text = otherPlayer.PlayerSpeed.ToString("D2");
+        otherPlayerStats.SetActive(true);
+        yield return null;
+    }
+
+    public void HidePlayerInspector()
+    {
+        otherPlayerStats.SetActive(false);
     }
 }
