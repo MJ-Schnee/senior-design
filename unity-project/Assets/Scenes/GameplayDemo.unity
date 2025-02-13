@@ -1142,8 +1142,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilePrefab: {fileID: 8971109745029973530, guid: 8d75977b7b830c64e8484204d19113e6, type: 3}
-  gridHeight: 30
-  gridWidth: 30
+  gridHeight: 20
+  gridWidth: 20
 --- !u!4 &624990335
 Transform:
   m_ObjectHideFlags: 0
@@ -3768,10 +3768,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd193b9be282ddf48ae6457785398c53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
+  baseMoveSpeed: 10
+  maxMoveSpeed: 20
   zoomSpeed: 5
   minZoom: 5
   maxZoom: 20
+  zoomMultiplier: 3
 --- !u!1 &2015135190
 GameObject:
   m_ObjectHideFlags: 0
