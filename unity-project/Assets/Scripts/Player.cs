@@ -1,14 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public Color IconColor;
 
-    public int PlayerSpeed;
-
-    public int RemainingSpeed;
+    public int PlayerAc, PlayerHp_curr, PlayerHp_max, PlayerSpeed, RemainingSpeed;
 
     public Renderer TurnIdentifierRenderer;
 
@@ -22,6 +21,7 @@ public class Player : MonoBehaviour
     {
         GameManager.OnEndTurn += OnEndTurn;
         animator = GetComponent<Animator>();
+        PlayerHp_curr = PlayerHp_max;
     }
 
     void OnEndTurn(Player nextPlayer)
@@ -144,5 +144,17 @@ public class Player : MonoBehaviour
         // TODO make this work in the OnEndTurn function or 
         // otherwise run when the player hits end turn button
         this.endT();
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        UiManager.Instance.InspectorCoroutine = UiManager.Instance.UpdatePlayerInspector(this);
+        StartCoroutine(UiManager.Instance.InspectorCoroutine);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        UiManager.Instance.HidePlayerInspector();
+        StopCoroutine(UiManager.Instance.InspectorCoroutine);
     }
 }

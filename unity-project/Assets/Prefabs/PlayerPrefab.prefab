@@ -175,6 +175,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IconColor: {r: 1, g: 0.90554774, b: 0, a: 1}
+  PlayerAc: 12
+  PlayerHp_curr: 0
+  PlayerHp_max: 20
   PlayerSpeed: 8
   RemainingSpeed: 0
   TurnIdentifierRenderer: {fileID: 3581860992600816729}
