@@ -13,7 +13,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public Material ActiveTurnMaterial, InactiveTurnMaterial;
 
-    private bool isMyTurn = false;
+    private bool isMyTurn;
 
     private Animator animator;
 
@@ -38,7 +38,58 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             TurnIdentifierRenderer.material = InactiveTurnMaterial;
         }
     }
+    // This function checks if the tile we are on is a door tile and an edge tile,
+    // If it is then we create a new room, inputing the coordinates of the top cornor of the new room.
+    // TODO make this work in the negative directions
+    public void endT()
+    {
+        // Get our current position
+        int positionX = (int)Mathf.Round(transform.position.x);
+        int positionZ = (int)Mathf.Round(transform.position.z);
 
+        // Checks to make sure this is a door tile and an edge tile
+        // If its not an edge tile we know we already "opened" this door
+
+        int checkE = TileGridManager.Instance.checkEdge(positionX, positionZ);
+        Tile checkDoor = TileGridManager.Instance.getTile(positionX, positionZ);
+        bool checkD = checkDoor.getDoor();
+        if(checkD)
+        {
+            //Based on which direction the door is facing we create our new room
+            if(checkE == 1)
+            {
+                // for the positive X direction
+                if(positionX > 0)
+                {
+                    // for first new room Z is some number prob between -1 and 1
+                    // we set that to 10 so its the top corner
+                    // we know we are already at the edge of X so we just add the size of our new room
+                    int Z = 10 * (Mathf.FloorToInt (positionZ/10) + 1);
+                    TileGridManager.Instance.newRoom(positionX + 20, Z);
+                }
+                /*else
+                {
+                    TileGridManager.Instance.newRoom(positionX - 20, positionZ);
+                }*/
+            }
+            else if(checkE == 2)
+            {
+                if(positionZ > 0)
+                {
+                    // for first new room X is some number prob between -1 and 1
+                    // we set that to 10 so its the top corner
+                    // we know we are already at the edge of Z so we just add the size of our new room
+                    int X = 10 * (Mathf.FloorToInt (positionX/10) + 1);
+                    TileGridManager.Instance.newRoom(X, positionZ + 20);
+                }
+                /*
+                else
+                {
+                    TileGridManager.Instance.newRoom(positionX, positionZ - 20);
+                }*/
+            }
+        }
+    }
     public IEnumerator MoveTo(Transform newTransform)
     {
         float walkSpeed = 7.0f;
@@ -89,6 +140,10 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             }
         }
         animator.SetBool("IsMoving", false);
+        // Calling function to check if we ended on a door and edge tile
+        // TODO make this work in the OnEndTurn function or 
+        // otherwise run when the player hits end turn button
+        this.endT();
     }
 
     public void OnPointerEnter(PointerEventData eventData)

@@ -39,6 +39,38 @@ public class TileGridManager : MonoBehaviour
                 TileGrid_coord.Add((i, j), tile);
             }
         }
+        // Change certain tiles into wall
+        for (int i = -gridWidth/2; i <= gridWidth/2; i++)
+        {
+            for (int j = -gridHeight/2; j <= gridHeight/2; j++)
+            {
+                if(checkEdge(i,j) != 0)
+                {
+                    getTile(i,j).toggleWall(true);
+                }
+            }
+        }
+        // Change certain tiles into door
+        for(int k = gridWidth/2; k <= (gridWidth+6)/2; k++)
+        {
+            Tile tileD = getTile(gridWidth/2, k-12);
+            tileD.toggleWall(false);
+            tileD.toggleDoor(true);
+        }
+        for(int l = gridHeight/2; l <= (gridHeight+6)/2; l++)
+        {
+            Tile tileD = getTile(l-12, gridHeight/2);
+            tileD.toggleWall(false);
+            tileD.toggleDoor(true);
+        }
+    }
+
+    // Function to get a tile at specific coordinates
+    public Tile getTile(int x, int y)
+    {
+        TileGrid_coord.TryGetValue((x,y), out GameObject tile);
+        tile.TryGetComponent(out Tile tileComponenet);
+        return tileComponenet;
     }
 
     public void HighlightReachableTiles(int x_cen, int y_cen, int range)
@@ -158,5 +190,68 @@ public class TileGridManager : MonoBehaviour
         }
         path.Reverse();
         return path;
+    }
+
+    // Function creates a new Room, input is the coordinates of the top cornor of the new room
+    public void newRoom(int x, int y)
+    {   
+        for (int i = x; i > (x-gridWidth); i--)
+        {
+            for (int j = y; j > (y-gridHeight); j--)
+            {
+                GameObject tile = Instantiate(tilePrefab, new Vector3(i, 0, j), Quaternion.identity, transform);
+                TileGrid_tile.Add(tile, (i, j));
+                TileGrid_coord.Add((i, j), tile);
+            }
+        }
+        // Changes certain tiles into wall tiles
+        for (int i = x; i > (x-gridWidth); i--)
+        {
+            for (int j = y; j > (y-gridHeight); j--)
+            {
+                if(checkEdge(i,j) != 0)
+                {
+                    getTile(i,j).toggleWall(true);
+                }
+            }
+        }
+        // For demo purposes creating a tile for enemy spawn
+        getTile((x - gridWidth/2),(y - gridHeight/2)).toggleEnemy(true);
+    }
+
+    // Function that checks if this is an edge tile, input is coordinates of the tile
+    // Output is number dependent on which direction this is an edge tile for.
+    // TODO make this work in the negative directions as well
+    public int checkEdge(int x, int z)
+    {
+        (int, int) tile = (x,z);
+        var XE = (0,1);
+        var ZE = (1,0);
+        (int, int) neighbor = (tile.Item1 + XE.Item1, tile.Item2 + XE.Item2);
+        if (!(TileGrid_coord.ContainsKey(neighbor)))
+        {
+            return 2;
+        }
+        (int, int) neighbor2 = (tile.Item1 + ZE.Item1, tile.Item2 + ZE.Item2);
+        if (!(TileGrid_coord.ContainsKey(neighbor2)))
+        {
+            return 1;
+        }
+
+        // For the negative directions
+        // Editing note: maybe return 3 and 4 and make seperate cases?
+        XE = (0,-1);
+        ZE = (-1,0);
+        (int, int) neighbor3 = (tile.Item1 + XE.Item1, tile.Item2 + XE.Item2);
+        if (!(TileGrid_coord.ContainsKey(neighbor3)))
+        {
+            return 2;
+        }
+        (int, int) neighbor4 = (tile.Item1 + ZE.Item1, tile.Item2 + ZE.Item2);
+        if (!(TileGrid_coord.ContainsKey(neighbor4)))
+        {
+            return 1;
+        }
+        return 0;
     }
 }
