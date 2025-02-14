@@ -4,7 +4,6 @@ using UnityEngine;
 public class TileGridManager : MonoBehaviour
 {
     public static TileGridManager Instance;
-
     public GameObject tilePrefab;
     
     // Bi-Directional searching for tile by object or coordinate
@@ -217,6 +216,7 @@ public class TileGridManager : MonoBehaviour
         }
         // For demo purposes creating a tile for enemy spawn
         getTile((x - gridWidth/2),(y - gridHeight/2)).toggleEnemy(true);
+        GameManager.Instance.GenerateRandomEnemy(x - gridWidth/2,y - gridHeight/2);
     }
 
     // Function that checks if this is an edge tile, input is coordinates of the tile

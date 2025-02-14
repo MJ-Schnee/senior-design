@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
 
     public List<Player> InitialPlayerList;
 
+    public Enemy enemyFab;
+
     public CircularLinkedList<Player> TurnOrder;
 
     public static event Action<Player> OnEndTurn;
@@ -59,6 +61,12 @@ public class GameManager : MonoBehaviour
     public bool RemoveTurn(Player removedPlayer)
     {
         return TurnOrder.Remove(removedPlayer);
+    }
+    // TODO: Make more enemy options so it's actually random lol
+    public Enemy GenerateRandomEnemy(int x, int y) {
+        Enemy e = Instantiate(enemyFab, new Vector3(x,0,y), Quaternion.identity, transform);
+        AddTurn(e);
+        return e;
     }
 }
 

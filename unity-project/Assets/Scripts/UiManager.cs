@@ -149,8 +149,14 @@ public class UiManager : MonoBehaviour
 
             // Example coloring for different players
             icon.TryGetComponent(out Image iconImage);
-            int playerNum = int.Parse(player.name[7..]);
-            icon.name = $"Player {playerNum} icon ({i})";
+            if (player.GetType() == typeof(Enemy)) {
+                icon.name = "Example Enemy";
+            }
+            else
+            {
+                int playerNum = int.Parse(player.name[7..]);
+                icon.name = $"Player {playerNum} icon ({i})";
+            }
             iconImage.color = player.IconColor;
 
             turnIcons.Add(icon);
@@ -159,6 +165,9 @@ public class UiManager : MonoBehaviour
 
     void HandleEndTurn(Player nextTurnPlayer)
     {
+        uiState = UiState.Idle;
+        TileGridManager.Instance.UnhighlightAllTiles();
+
         UpdatePlayerPanel(nextTurnPlayer);
         UpdateUpNextPanel();
         currentPlayer = nextTurnPlayer;
