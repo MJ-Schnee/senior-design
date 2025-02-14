@@ -15,7 +15,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private bool isMyTurn;
 
-    private Animator animator;
+    protected Animator animator;
 
     void Awake()
     {
