@@ -15,12 +15,12 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private bool isMyTurn;
 
+    [SerializeField]
     protected Animator animator;
 
     void Awake()
     {
         GameManager.OnEndTurn += OnEndTurn;
-        animator = GetComponent<Animator>();
         PlayerHp_curr = PlayerHp_max;
     }
 

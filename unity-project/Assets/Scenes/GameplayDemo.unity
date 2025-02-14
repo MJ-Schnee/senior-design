@@ -2517,6 +2517,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 463752, guid: dac2afd5e1dda1c4d9fe05cf141b47f0, type: 3}
   m_PrefabInstance: {fileID: 887348147}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &887348149 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9536910, guid: dac2afd5e1dda1c4d9fe05cf141b47f0, type: 3}
+  m_PrefabInstance: {fileID: 887348147}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &938719522
 GameObject:
   m_ObjectHideFlags: 0
@@ -3005,10 +3010,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4870988698973056012, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: PlayerAc
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 1983012828}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: IconColor.b
       value: 1
@@ -4719,6 +4732,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 436190, guid: 55baa12c54e933f44a6f55a515a15199, type: 3}
   m_PrefabInstance: {fileID: 1983012826}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &1983012828 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9551260, guid: 55baa12c54e933f44a6f55a515a15199, type: 3}
+  m_PrefabInstance: {fileID: 1983012826}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2007210084
 GameObject:
   m_ObjectHideFlags: 0
@@ -5259,10 +5277,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4870988698973056012, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: PlayerAc
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 887348149}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: PlayerHp_max
       value: 20
