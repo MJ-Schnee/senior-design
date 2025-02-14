@@ -529,6 +529,7 @@ MonoBehaviour:
   InitialPlayerList:
   - {fileID: 962039922489728494}
   - {fileID: 1374601513}
+  enemyFab: {fileID: 5604584777461859994, guid: d02fb146ac3449149bee9c408754fc61, type: 3}
 --- !u!4 &289611107
 Transform:
   m_ObjectHideFlags: 0
