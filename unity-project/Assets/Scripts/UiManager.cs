@@ -222,7 +222,7 @@ public class UiManager : MonoBehaviour
         if (currentPlayer == otherPlayer)
         {
             otherPlayerStats.SetActive(false);
-            yield return null;
+            yield break;
         }
 
         otherPlayerImage.color = otherPlayer.IconColor;
@@ -232,7 +232,6 @@ public class UiManager : MonoBehaviour
         otherPlayerHp_curr.text = otherPlayer.PlayerHp_curr.ToString("D2");
         otherPlayerSpeed.text = otherPlayer.PlayerSpeed.ToString("D2");
         otherPlayerStats.SetActive(true);
-        yield return null;
     }
 
     public void HidePlayerInspector()
