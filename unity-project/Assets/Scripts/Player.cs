@@ -127,6 +127,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (tilePath != null && tilePath.Count > 0)
         {
             RemainingSpeed -= tilePath.Count;
+            UiManager.Instance.UpdatePlayerPanel(this);
             foreach (GameObject tile in tilePath)
             {
                 Vector3 targetPosition = tile.transform.position;

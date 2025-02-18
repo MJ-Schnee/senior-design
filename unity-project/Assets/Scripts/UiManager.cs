@@ -99,17 +99,17 @@ public class UiManager : MonoBehaviour
         playerImageButton.onClick.AddListener(() => CameraController.Instance.CenterObject(currentPlayer.gameObject));
     }
 
-    void UpdatePlayerPanel(Player player)
+    public void UpdatePlayerPanel(Player player)
     {
         playerImage.color = player.IconColor;
         playerName.text = player.name;
         playerAc.text = player.PlayerAc.ToString("D2");
         playerHp_max.text = player.PlayerHp_max.ToString("D2");
         playerHp_curr.text = player.PlayerHp_curr.ToString("D2");
-        playerSpeed.text = player.PlayerSpeed.ToString("D2");
+        playerSpeed.text = player.RemainingSpeed.ToString("D2");
     }
 
-    void UpdateUpNextPanel()
+    public void UpdateUpNextPanel()
     {
         // Destroy all current icons in panel
         foreach (var icon in turnIcons)

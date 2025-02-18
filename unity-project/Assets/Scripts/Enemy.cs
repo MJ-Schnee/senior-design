@@ -68,6 +68,7 @@ public class Enemy : Player
             {
                 // TODO: Damage player, Hit animation
                 // Target.PlayerHp_curr = Mathf.Max(0, Target.PlayerHp_curr - enemyDamage);
+                UiManager.Instance.UpdatePlayerPanel(this);
             }
             else
             {

@@ -22,15 +22,16 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this);
 
         TurnOrder = new();
-
-        foreach (Player player in InitialPlayerList)
-        {
-            AddTurn(player);
-        }
     }
 
     void Start()
     {
+        // Wait for UI to Awake
+        foreach (Player player in InitialPlayerList)
+        {
+            AddTurn(player);
+        }
+
         StartCoroutine(StartFirstTurn());
     }
 
@@ -63,11 +64,14 @@ public class GameManager : MonoBehaviour
         {
             TurnOrder.AddToEnd(newPlayer);
         }
+        UiManager.Instance.UpdateUpNextPanel();
     }
 
     public bool RemoveTurn(Player removedPlayer)
     {
-        return TurnOrder.Remove(removedPlayer);
+        bool removed = TurnOrder.Remove(removedPlayer);
+        UiManager.Instance.UpdateUpNextPanel();
+        return removed;
     }
 
     // TODO: Make more enemy options so it's actually random lol
