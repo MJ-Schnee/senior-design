@@ -46,12 +46,12 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         int positionX = Mathf.RoundToInt(transform.position.x);
         int positionZ = Mathf.RoundToInt(transform.position.z);
-        Tile currentTile = TileGridManager.Instance.getTile(positionX, positionZ);
+        Tile currentTile = TileGridManager.Instance.GetTileAtLoc(positionX, positionZ);
         return currentTile;
     }
 
     // This function checks if the tile we are on is a door tile and an edge tile,
-    // If it is then we create a new room, inputing the coordinates of the top cornor of the new room.
+    // If it is then we create a new room, inputting the coordinates of the top corner of the new room.
     // TODO make this work in the negative directions
     public void endT()
     {
@@ -63,7 +63,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         // If its not an edge tile we know we already "opened" this door
 
         int checkE = TileGridManager.Instance.checkEdge(positionX, positionZ);
-        Tile checkDoor = TileGridManager.Instance.getTile(positionX, positionZ);
+        Tile checkDoor = TileGridManager.Instance.GetTileAtLoc(positionX, positionZ);
         bool checkD = checkDoor.getDoor();
         if(checkD)
         {
