@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Enemy : Player
@@ -52,8 +53,8 @@ public class Enemy : Player
     private IEnumerator EnemyTurnAI()
     {
         // Move the enemy toward a player
-        (Player Target, int distance, Tile tile) = FindNearestTarget();
-        (Transform destination, bool adjacentToTarget) = FindMovementDestination(tile);
+        (Player targetPlayer, int distance, Tile targetTile) = FindNearestTarget();
+        (Transform destination, bool adjacentToTarget) = FindMovementDestination(targetTile);
         if (distance > 1)
         {
             yield return MoveTo(destination);
@@ -64,7 +65,7 @@ public class Enemy : Player
         {
             // Check for his or miss
             int enemyHit = Random.Range(1,21) + enemyHitBonus;
-            if (enemyHit >= Target.PlayerAc)
+            if (enemyHit >= targetPlayer.PlayerAc)
             {
                 // TODO: Damage player, Hit animation
                 // Target.PlayerHp_curr = Mathf.Max(0, Target.PlayerHp_curr - enemyDamage);

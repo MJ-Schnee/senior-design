@@ -141,7 +141,8 @@ public class TileGridManager : MonoBehaviour
             foreach ((int, int) next in GetNeighbors(current))
             {
                 TileGrid_coord.TryGetValue(next, out GameObject tile);
-                if (tile == null || !tile.TryGetComponent(out Tile tileComponent) || !tileComponent.IsWalkable)
+                // Only VALID tiles (or a non-valid goal tile)
+                if (!(next == goal) && (tile == null || !tile.TryGetComponent(out Tile tileComponent) || !tileComponent.IsWalkable))
                 {
                     continue;
                 }
@@ -184,8 +185,13 @@ public class TileGridManager : MonoBehaviour
 
         while (current != null && current != start)
         {
-            path.Add(TileGrid_coord[current.Value]);
-            current = cameFrom.GetValueOrDefault(current.Value, null);
+            GameObject tileObj = TileGrid_coord[current.Value];
+            // Remove added tiles that aren't walkable (player goal tile)
+            if (tileObj.GetComponent<Tile>().IsWalkable)
+            {
+                path.Add(tileObj);
+            }
+            current = cameFrom[current.Value];
         }
         path.Reverse();
         return path;
