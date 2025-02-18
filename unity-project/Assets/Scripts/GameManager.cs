@@ -53,19 +53,27 @@ public class GameManager : MonoBehaviour
         EndTurn();
     }
 
-    public void AddTurn(Player newPlayer)
+    public void AddTurn(Player newPlayer, bool afterCurrentPlayer = false)
     {
-        TurnOrder.Add(newPlayer);
+        if (afterCurrentPlayer)
+        {
+            TurnOrder.AddAfter(newPlayer, TurnOrder.GetCurrentTurn());
+        }
+        else
+        {
+            TurnOrder.AddToEnd(newPlayer);
+        }
     }
 
     public bool RemoveTurn(Player removedPlayer)
     {
         return TurnOrder.Remove(removedPlayer);
     }
+
     // TODO: Make more enemy options so it's actually random lol
     public Enemy GenerateRandomEnemy(int x, int y) {
         Enemy e = Instantiate(enemyFab, new Vector3(x,0,y), Quaternion.identity, transform);
-        AddTurn(e);
+        AddTurn(e, afterCurrentPlayer: true);
         return e;
     }
 }
@@ -75,7 +83,6 @@ public class GameManager : MonoBehaviour
 [CustomEditor(typeof(GameManager))]
 public class GameManagerEditor : Editor
 {
-
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
