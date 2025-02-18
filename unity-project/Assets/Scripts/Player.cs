@@ -37,7 +37,19 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             isMyTurn = false;
             TurnIdentifierRenderer.material = InactiveTurnMaterial;
         }
+
+        Tile currentTile = GetCurrentTile();
+        currentTile.IsWalkable = isMyTurn;
     }
+
+    public Tile GetCurrentTile()
+    {
+        int positionX = (int)Mathf.Round(transform.position.x);
+        int positionZ = (int)Mathf.Round(transform.position.z);
+        Tile currentTile = TileGridManager.Instance.getTile(positionX, positionZ);
+        return currentTile;
+    }
+
     // This function checks if the tile we are on is a door tile and an edge tile,
     // If it is then we create a new room, inputing the coordinates of the top cornor of the new room.
     // TODO make this work in the negative directions
@@ -90,6 +102,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             }
         }
     }
+
     public IEnumerator MoveTo(Transform newTransform)
     {
         float walkSpeed = 7.0f;

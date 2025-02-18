@@ -185,18 +185,18 @@ public class TileGridManager : MonoBehaviour
         while (current != null && current != start)
         {
             path.Add(TileGrid_coord[current.Value]);
-            current = cameFrom[current.Value];
+            current = cameFrom.GetValueOrDefault(current.Value, null);
         }
         path.Reverse();
         return path;
     }
 
-    // Function creates a new Room, input is the coordinates of the top cornor of the new room
-    public void newRoom(int x, int y)
+    // Function creates a new Room, input is the coordinates of the top corner of the new room
+    public void newRoom(int x, int z)
     {   
         for (int i = x; i > (x-gridWidth); i--)
         {
-            for (int j = y; j > (y-gridHeight); j--)
+            for (int j = z; j > (z-gridHeight); j--)
             {
                 GameObject tile = Instantiate(tilePrefab, new Vector3(i, 0, j), Quaternion.identity, transform);
                 TileGrid_tile.Add(tile, (i, j));
@@ -206,7 +206,7 @@ public class TileGridManager : MonoBehaviour
         // Changes certain tiles into wall tiles
         for (int i = x; i > (x-gridWidth); i--)
         {
-            for (int j = y; j > (y-gridHeight); j--)
+            for (int j = z; j > (z-gridHeight); j--)
             {
                 if(checkEdge(i,j) != 0)
                 {
@@ -215,8 +215,8 @@ public class TileGridManager : MonoBehaviour
             }
         }
         // For demo purposes creating a tile for enemy spawn
-        getTile((x - gridWidth/2),(y - gridHeight/2)).toggleEnemy(true);
-        GameManager.Instance.GenerateRandomEnemy(x - gridWidth/2,y - gridHeight/2);
+        getTile((x - gridWidth/2),(z - gridHeight/2)).toggleEnemy(true);
+        GameManager.Instance.GenerateRandomEnemy(x - gridWidth/2,z - gridHeight/2);
     }
 
     // Function that checks if this is an edge tile, input is coordinates of the tile
