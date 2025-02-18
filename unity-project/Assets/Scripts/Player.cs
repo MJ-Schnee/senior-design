@@ -105,8 +105,8 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public IEnumerator MoveTo(Transform newTransform)
     {
-        float walkSpeed = 7.0f;
-        float turnSpeed = 10.0f;
+        float walkSpeed = 8.0f;
+        float turnSpeed = 15.0f;
 
         (int, int) startTileLoc = (Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.z));
         (int, int) endTileLoc = (Mathf.RoundToInt(newTransform.position.x), Mathf.RoundToInt(newTransform.position.z));
@@ -151,6 +151,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                     transform.position = Vector3.MoveTowards(transform.position, targetPosition, walkSpeed * Time.deltaTime);
                     yield return null;
                 }
+                transform.position = targetPosition;
             }
         }
         animator.SetBool("IsMoving", false);
