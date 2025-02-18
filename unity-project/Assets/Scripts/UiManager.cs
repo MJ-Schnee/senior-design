@@ -187,8 +187,8 @@ public class UiManager : MonoBehaviour
         if (uiState == UiState.Moving)
         {
             TileGridManager.Instance.HighlightReachableTiles(
-                (int)Math.Round(currentPlayer.transform.position.x),
-                (int)Math.Round(currentPlayer.transform.position.z),
+                Mathf.RoundToInt(currentPlayer.transform.position.x),
+                Mathf.RoundToInt(currentPlayer.transform.position.z),
                 currentPlayer.RemainingSpeed
             );
         }

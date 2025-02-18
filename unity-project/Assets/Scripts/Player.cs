@@ -44,8 +44,8 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public Tile GetCurrentTile()
     {
-        int positionX = (int)Mathf.Round(transform.position.x);
-        int positionZ = (int)Mathf.Round(transform.position.z);
+        int positionX = Mathf.RoundToInt(transform.position.x);
+        int positionZ = Mathf.RoundToInt(transform.position.z);
         Tile currentTile = TileGridManager.Instance.getTile(positionX, positionZ);
         return currentTile;
     }
@@ -56,8 +56,8 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void endT()
     {
         // Get our current position
-        int positionX = (int)Mathf.Round(transform.position.x);
-        int positionZ = (int)Mathf.Round(transform.position.z);
+        int positionX = Mathf.RoundToInt(transform.position.x);
+        int positionZ = Mathf.RoundToInt(transform.position.z);
 
         // Checks to make sure this is a door tile and an edge tile
         // If its not an edge tile we know we already "opened" this door
@@ -108,8 +108,8 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         float walkSpeed = 7.0f;
         float turnSpeed = 10.0f;
 
-        (int, int) startTileLoc = ((int)transform.position.x, (int)transform.position.z);
-        (int, int) endTileLoc = ((int)newTransform.position.x, (int)newTransform.position.z);
+        (int, int) startTileLoc = (Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.z));
+        (int, int) endTileLoc = (Mathf.RoundToInt(newTransform.position.x), Mathf.RoundToInt(newTransform.position.z));
         List<GameObject> tilePath = TileGridManager.Instance.FindRoute(startTileLoc, endTileLoc);
         
         // Draw line for debug path

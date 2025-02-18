@@ -7,15 +7,15 @@ public class Enemy : Player
     public int enemyHitBonus, enemyDamage;
     public int enemyAttackRange = 1;
 
-    // Returns the closest alive player, distance to the player, and the x,y coords of the player
+    // Returns the closest alive player, distance to the player, and tile the player is on
     // Equidistant players are chosen at random
-    public (Player, int, (int, int)) FindNearestTarget()
+    public (Player, int, Tile) FindNearestTarget()
     {
         List<Player> c = new();
         int shortestDist = int.MaxValue;
         foreach (Player player in GameManager.Instance.InitialPlayerList) {
             if (player.PlayerHp_curr > 0) {
-                int dist = (int)Vector3.Distance(player.transform.position, transform.position);
+                int dist = Mathf.RoundToInt(Vector3.Distance(player.transform.position, transform.position));
                 if (dist < shortestDist) {
                     c.Clear();
                     shortestDist = dist;
@@ -27,14 +27,13 @@ public class Enemy : Player
             }
         }
         Player chosen = c[Random.Range(0, c.Count)];
-        return (chosen, shortestDist, ((int)chosen.transform.position.x, (int)chosen.transform.position.z));
+        return (chosen, shortestDist, chosen.GetCurrentTile());
     }
 
     // Returns tile transform closest to the nearest alive player within the enemy's movement speed and if that tile is adjacent to player
-    public (Transform, bool) FindMovementDestination((int, int) playerCoords)
+    public (Transform, bool) FindMovementDestination(Tile playerTile)
     {
-        (int, int) startCoords = ((int)transform.position.x, (int)transform.position.z);
-        List<GameObject> route = TileGridManager.Instance.FindRoute(startCoords, playerCoords);
+        List<GameObject> route = TileGridManager.Instance.FindRoute(GetCurrentTile().gameObject, playerTile.gameObject);
         
         int dist = Mathf.Clamp(route.Count - 1, 0, PlayerSpeed);
         if (route.Count == 0)
@@ -53,8 +52,8 @@ public class Enemy : Player
     private IEnumerator EnemyTurnAI()
     {
         // Move the enemy toward a player
-        (Player Target, int distance, (int, int) coords) = FindNearestTarget();
-        (Transform destination, bool adjacentToTarget) = FindMovementDestination(coords);
+        (Player Target, int distance, Tile tile) = FindNearestTarget();
+        (Transform destination, bool adjacentToTarget) = FindMovementDestination(tile);
         if (distance > 1)
         {
             yield return MoveTo(destination);
