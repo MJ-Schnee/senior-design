@@ -101,5 +101,7 @@ public class Enemy : Player
         GameManager.OnEndTurn += OnEndTurn;
         animator = GetComponent<Animator>();
         PlayerHp_curr = PlayerHp_max;
+        // TODO: Individualize icons by enemy type
+        IconColor = Color.red;
     }
 }
