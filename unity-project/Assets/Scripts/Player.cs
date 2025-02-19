@@ -18,6 +18,8 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     [SerializeField]
     protected Animator animator;
 
+    public BaseAction Action1, Action2, Action3, Action4;
+
     void Awake()
     {
         GameManager.OnEndTurn += OnEndTurn;

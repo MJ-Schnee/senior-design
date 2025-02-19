@@ -13,6 +13,7 @@ public class UiManager : MonoBehaviour
         Idle,
         PerformingAction,
         Moving,
+        ActionTargeting,
     }
 
     public static UiManager Instance;
@@ -21,6 +22,7 @@ public class UiManager : MonoBehaviour
 
     public Transform UpNextPanel;
 
+    #region Player Panel Stats
     [Header("Player Panel Stats")]
     [SerializeField]
     Image playerImage;
@@ -39,7 +41,9 @@ public class UiManager : MonoBehaviour
     
     [SerializeField]
     TMP_Text playerSpeed;
+    #endregion
 
+    #region Player Inspector Stats
     [Header("Player Inspector Stats")]
     [SerializeField]
     GameObject otherPlayerStats;
@@ -61,6 +65,7 @@ public class UiManager : MonoBehaviour
     
     [SerializeField]
     TMP_Text otherPlayerSpeed;
+    #endregion
 
     List<GameObject> turnIcons;
 
@@ -71,6 +76,23 @@ public class UiManager : MonoBehaviour
     public float InspectorTimerSec = 0.5f;
 
     public IEnumerator InspectorCoroutine;
+
+    #region Action Buttons
+    [Header("Action Buttons")]
+    [SerializeField]
+    GameObject ActionButton1;
+    
+    [SerializeField]
+    GameObject ActionButton2;
+    
+    [SerializeField]
+    GameObject ActionButton3;
+    
+    [SerializeField]
+    GameObject ActionButton4;
+    #endregion
+
+    private List<GameObject> actionSelections;
 
     void Awake()
     {
@@ -101,12 +123,40 @@ public class UiManager : MonoBehaviour
 
     public void UpdatePlayerPanel(Player player)
     {
+        // Update player stats
         playerImage.color = player.IconColor;
         playerName.text = player.name;
         playerAc.text = player.PlayerAc.ToString("D2");
         playerHp_max.text = player.PlayerHp_max.ToString("D2");
         playerHp_curr.text = player.PlayerHp_curr.ToString("D2");
         playerSpeed.text = player.RemainingSpeed.ToString("D2");
+
+        // Update action buttons
+        BaseAction[] playerActions = {player.Action1, player.Action2, player.Action3, player.Action4};
+        GameObject[] actionButtons = {ActionButton1, ActionButton2, ActionButton3, ActionButton4};
+        for (int i = 0; i < 4; i++)
+        {
+            BaseAction playerAction = playerActions[i];
+            GameObject actionButton = actionButtons[i];
+
+            if (playerAction == null)
+            {
+                actionButton.SetActive(false);
+            }
+            else
+            {
+                actionButton.SetActive(true);
+
+                // Visual changes
+                actionButton.GetComponent<Image>().color = playerAction.ActionColor;
+                actionButton.GetComponentInChildren<TMP_Text>().text = playerAction.ActionName;
+                actionButton.GetComponent<Tooltip>().Message = playerAction.ActionDescription;
+
+                // Update button click to use action
+                actionButton.GetComponent<Button>().onClick.RemoveAllListeners();
+                actionButton.GetComponent<Button>().onClick.AddListener(OnActionButtonClick);
+            }
+        }
     }
 
     public void UpdateUpNextPanel()
@@ -237,5 +287,19 @@ public class UiManager : MonoBehaviour
     public void HidePlayerInspector()
     {
         otherPlayerStats.SetActive(false);
+    }
+
+    public void OnActionButtonClick()
+    {
+        if (uiState != UiState.Idle)
+        {
+            if (uiState == UiState.ActionTargeting)
+            {
+                uiState = UiState.Idle;
+            }
+            return;
+        }
+
+        uiState = UiState.ActionTargeting;
     }
 }
