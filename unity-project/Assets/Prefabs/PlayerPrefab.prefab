@@ -161,3 +161,10 @@ MonoBehaviour:
   TurnIdentifierRenderer: {fileID: 3581860992600816729}
   ActiveTurnMaterial: {fileID: 2100000, guid: 42db9974899632548aa1090279811665, type: 2}
   InactiveTurnMaterial: {fileID: 2100000, guid: 02267fdd3cd1b8144a8e54da936c50d8, type: 2}
+  SelectedTurnIdMaterial: {fileID: 2100000, guid: 4ab0f292c49c3e341851785008c5f3c7, type: 2}
+  SelectableTurnIdMaterial: {fileID: 2100000, guid: 9c7acfd26d162ac4298f8bf810143c2b, type: 2}
+  animator: {fileID: 0}
+  Action1: {fileID: 0}
+  Action2: {fileID: 0}
+  Action3: {fileID: 0}
+  Action4: {fileID: 0}

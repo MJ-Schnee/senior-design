@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public Color IconColor;
 
@@ -11,7 +11,11 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public Renderer TurnIdentifierRenderer;
 
-    public Material ActiveTurnMaterial, InactiveTurnMaterial;
+    public Material
+        ActiveTurnMaterial,
+        InactiveTurnMaterial,
+        SelectedTurnIdMaterial,
+        SelectableTurnIdMaterial;
 
     private bool isMyTurn;
 
@@ -173,5 +177,10 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         UiManager.Instance.HidePlayerInspector();
         StopCoroutine(UiManager.Instance.InspectorCoroutine);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        ActionTargetingManager.Instance.HandlePlayerClicked(this);
     }
 }

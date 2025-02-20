@@ -92,8 +92,6 @@ public class UiManager : MonoBehaviour
     GameObject ActionButton4;
     #endregion
 
-    private List<GameObject> actionSelections;
-
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -154,7 +152,7 @@ public class UiManager : MonoBehaviour
 
                 // Update button click to use action
                 actionButton.GetComponent<Button>().onClick.RemoveAllListeners();
-                actionButton.GetComponent<Button>().onClick.AddListener(OnActionButtonClick);
+                actionButton.GetComponent<Button>().onClick.AddListener(() => OnActionButtonClick(playerAction));
             }
         }
     }
@@ -289,17 +287,11 @@ public class UiManager : MonoBehaviour
         otherPlayerStats.SetActive(false);
     }
 
-    public void OnActionButtonClick()
+    public void OnActionButtonClick(BaseAction playerAction)
     {
-        if (uiState != UiState.Idle)
-        {
-            if (uiState == UiState.ActionTargeting)
-            {
-                uiState = UiState.Idle;
-            }
-            return;
-        }
-
-        uiState = UiState.ActionTargeting;
+        ActionTargetingManager.Instance.StartTargetSelection(
+            playerAction,
+            currentPlayer
+        );
     }
 }
