@@ -30,9 +30,6 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     private void Awake()
     {
         IsHighlighted = false;
-        IsDoor = false;
-        IsWall = false;
-        IsEnemySpawn = false;
 
         materials = new List<Material>();
         foreach (var renderer in renderers)
