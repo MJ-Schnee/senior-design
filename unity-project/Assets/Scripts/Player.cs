@@ -218,6 +218,6 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     {
         Debug.Log($"{name}'s OnActionImpact event triggered.");
 
-        currentAction.ApplyImpact(this, currentActionTarget);
+        currentAction.ApplyImpact(currentActionTarget);
     }
 }

@@ -1,13 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class Enemy : Player
 {
-    public int enemyHitBonus, enemyDamage;
-    public int enemyAttackRange = 1;
-
     // Returns the closest alive player, distance to the player, and tile the player is on
     // Equidistant players are chosen at random
     public (Player, int, Tile) FindNearestTarget()
@@ -31,49 +27,45 @@ public class Enemy : Player
         return (chosen, shortestDist, chosen.GetCurrentTile());
     }
 
-    // Returns tile transform closest to the nearest alive player within the enemy's movement speed and if that tile is adjacent to player
-    public (Transform, bool) FindMovementDestination(Tile playerTile)
+    // Returns tile transform closest to the nearest alive player within the enemy's movement speed
+    public Transform FindMovementDestination(Tile playerTile)
     {
         List<GameObject> route = TileGridManager.Instance.FindRoute(GetCurrentTile().gameObject, playerTile.gameObject);
         
         int dist = Mathf.Clamp(route.Count - 1, 0, PlayerSpeed);
         if (route.Count == 0)
         {
-            return (transform, true);
+            return transform;
         }
         
         GameObject endTile = route[dist];
-        return (endTile.transform, dist <= route.Count - 1 - enemyAttackRange);
+        return endTile.transform;
     }
 
-    // Enemy Turn AI
-    // Currently just moves the enemy as far as it can toward the closest alive player and attacks if the enemy is right next to the player
-    // There is no attack animation right now
-    // Remember to call this in a coroutine
+    /// <summary>
+    /// Simple enemy AI: attempts to move next to closest player and then attack with the first attack available.
+    /// </summary>
     private IEnumerator EnemyTurnAI()
     {
         // Move the enemy toward a player
-        (Player targetPlayer, int distance, Tile targetTile) = FindNearestTarget();
-        (Transform destination, bool adjacentToTarget) = FindMovementDestination(targetTile);
-        if (distance > 1)
+        (Player targetPlayer, int distFromTarget, Tile targetTile) = FindNearestTarget();
+        Transform destination = FindMovementDestination(targetTile);
+        if (distFromTarget > 1)
         {
             yield return MoveTo(destination);
         }
         
         // Attack if possible
-        if (adjacentToTarget)
+        BaseAction[] actions = {Action1, Action2, Action3, Action4};
+        List<Tile> tilesInRange = TileGridManager.Instance.FindTilesInRange(GetCurrentTile(), Action1.ActionRange);
+        foreach (BaseAction action in actions)
         {
-            // Check for his or miss
-            int enemyHit = Random.Range(1,21) + enemyHitBonus;
-            if (enemyHit >= targetPlayer.PlayerAc)
+            if (action != null)
             {
-                // TODO: Damage player, Hit animation
-                // Target.PlayerHp_curr = Mathf.Max(0, Target.PlayerHp_curr - enemyDamage);
-                UiManager.Instance.UpdatePlayerPanel(this);
-            }
-            else
-            {
-                // TODO: Miss animation
+                if (tilesInRange.Contains(targetPlayer.GetCurrentTile()))
+                {
+                    action.UseAction(this, targetPlayer);
+                }
             }
         }
         this.endT();

@@ -11,9 +11,9 @@ public class BaseAction : ScriptableObject
 
     public Color ActionColor;
 
-    public uint NumTargets = 1;
+    public int NumTargets = 1;
 
-    public uint ActionDistance;
+    public int ActionRange;
 
     public int ActionDamage = 1;
 
@@ -25,8 +25,10 @@ public class BaseAction : ScriptableObject
         Debug.Log($"{actingPlayer.name} is {name}ing {targetPlayer.name}!");
 
         // Make players face each other
-        actingPlayer.transform.LookAt(targetPlayer.transform);
-        targetPlayer.transform.LookAt(actingPlayer.transform);
+        Vector3 targetPosition = new(targetPlayer.transform.position.x, actingPlayer.transform.position.y, targetPlayer.transform.position.z) ;
+        Vector3 actingPosition = new(actingPlayer.transform.position.x, targetPlayer.transform.position.y, actingPlayer.transform.position.z) ;
+        actingPlayer.transform.LookAt(targetPosition);
+        targetPlayer.transform.LookAt(actingPosition);
 
         actingPlayer.currentAction = this;
         actingPlayer.currentActionTarget = targetPlayer;
@@ -38,7 +40,7 @@ public class BaseAction : ScriptableObject
     /// <summary>
     /// Triggered on action animation impact, dealing ActionDamage damage to the target player.
     /// </summary>
-    public void ApplyImpact(Player actingPlayer, Player targetPlayer)
+    public void ApplyImpact(Player targetPlayer)
     {
         // Roll D20 against AC for hit
         int diceResult = Random.Range(1, 21);

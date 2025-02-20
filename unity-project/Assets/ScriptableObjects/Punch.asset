@@ -17,5 +17,5 @@ MonoBehaviour:
   ActionDescription: Punch 1 player within 1 tile for 1 damage
   ActionColor: {r: 0.7484276, g: 0, b: 0, a: 1}
   NumTargets: 1
-  ActionDistance: 1
+  ActionRange: 1
   ActionDamage: 1

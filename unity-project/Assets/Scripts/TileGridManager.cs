@@ -72,55 +72,18 @@ public class TileGridManager : MonoBehaviour
         return tileComponent;
     }
 
+    /// <summary>
+    /// Highlights all walkable tiles within range of player's speed centered at player
+    /// </summary>
     public void HighlightReachableTiles(int x_cen, int y_cen, int range)
     {
-        if (range == 0)
+        List<Tile> reachableTiles = FindTilesInRange(GetTileAtLoc(x_cen, y_cen), range);
+        foreach (Tile reachableTile in reachableTiles)
         {
-            return;
-        }
-
-        (int, int) startPos = (x_cen, y_cen);
-
-        Queue<(int, int)> frontier = new();
-        Dictionary<(int, int), int> distance = new();
-        frontier.Enqueue(startPos);
-        distance[startPos] = 0;
-
-        // Breadth-First Search
-        while (frontier.Count > 0)
-        {
-            // Dequeue a tile
-            (int, int) currentPos = frontier.Dequeue();
-            int currentDist = distance[currentPos];
-
-            // Highlight this tile, since it's reachable
-            Tile currTile = GetTileAtLoc(currentPos.Item1, currentPos.Item2);
-            currTile.ToggleHighlight(true);
-            highlightedTiles.Add(currTile.gameObject);
-
-            // Don't enqueue neighbors beyond range
-            if (currentDist >= range)
+            if (reachableTile.IsWalkable)
             {
-                continue;
-            }
-
-            // Check neighbors
-            foreach (var neighborPos in GetNeighbors(currentPos))
-            {
-                // Already visited?
-                if (distance.ContainsKey(neighborPos))
-                {
-                    continue;
-                }
-
-                // Make sure it's walkable before enqueueing
-                Tile neighborTile = GetTileAtLoc(neighborPos.Item1, neighborPos.Item2);
-                if (neighborTile.IsWalkable)
-                {
-                    // Mark distance and enqueue
-                    distance[neighborPos] = currentDist + 1;
-                    frontier.Enqueue(neighborPos);
-                }
+                reachableTile.ToggleHighlight(true);
+                highlightedTiles.Add(reachableTile.gameObject);
             }
         }
     }
@@ -291,5 +254,61 @@ public class TileGridManager : MonoBehaviour
             return 1;
         }
         return 0;
+    }
+
+    /// <summary>
+    /// Given a tile, it will return all tiles within a range
+    /// </summary>
+    public List<Tile> FindTilesInRange(Tile centerTile, int range)
+    {
+        List<Tile> tilesInRange = new();
+
+        if (range == 0)
+        {
+            return tilesInRange;
+        }
+
+        (int, int) startPos = (
+            Mathf.RoundToInt(centerTile.gameObject.transform.position.x),
+            Mathf.RoundToInt(centerTile.gameObject.transform.position.z)
+        );
+
+        Queue<(int, int)> frontier = new();
+        Dictionary<(int, int), int> distance = new();
+        frontier.Enqueue(startPos);
+        distance[startPos] = 0;
+
+        // Breadth-First Search
+        while (frontier.Count > 0)
+        {
+            // Dequeue a tile
+            (int, int) currentPos = frontier.Dequeue();
+            int currentDist = distance[currentPos];
+
+            Tile currTile = GetTileAtLoc(currentPos.Item1, currentPos.Item2);
+            tilesInRange.Add(currTile);
+
+            // Don't enqueue neighbors beyond range
+            if (currentDist >= range)
+            {
+                continue;
+            }
+
+            // Check neighbors
+            foreach (var neighborPos in GetNeighbors(currentPos))
+            {
+                // Already visited?
+                if (distance.ContainsKey(neighborPos))
+                {
+                    continue;
+                }
+
+                // Mark distance and enqueue
+                distance[neighborPos] = currentDist + 1;
+                frontier.Enqueue(neighborPos);
+            }
+        }
+
+        return tilesInRange;
     }
 }

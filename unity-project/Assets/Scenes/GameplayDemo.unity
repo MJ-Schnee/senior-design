@@ -3017,6 +3017,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
+      propertyPath: Action1
+      value: 
+      objectReference: {fileID: 11400000, guid: 427d4b470e1538a49b654f3f1be1016a, type: 2}
+    - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: Animator
       value: 
       objectReference: {fileID: 1700951127}

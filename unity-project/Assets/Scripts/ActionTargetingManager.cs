@@ -39,7 +39,6 @@ public class ActionTargetingManager : MonoBehaviour
 
         // Find all players in range
         Player[] allPlayers = FindObjectsOfType<Player>();
-        int actionRange = (int)action.ActionDistance;
         Vector3 actingPos = actingPlayer.transform.position;
         foreach (var p in allPlayers)
         {
@@ -50,7 +49,7 @@ public class ActionTargetingManager : MonoBehaviour
 
             int dx = Mathf.Abs(Mathf.RoundToInt(p.transform.position.x - actingPos.x));
             int dz = Mathf.Abs(Mathf.RoundToInt(p.transform.position.z - actingPos.z));
-            if (dx + dz <= actionRange)
+            if (dx + dz <= action.ActionRange)
             {
                 selectablePlayers.Add(p);
                 p.TurnIdentifierRenderer.material = p.SelectableTurnIdMaterial;
