@@ -9,12 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad039faeb166a874e98640c5bcc2a8a8, type: 3}
-  m_Name: TestAction
+  m_Script: {fileID: 11500000, guid: c5d2e9c0f37e17b43aa838070ecde4fc, type: 3}
+  m_Name: Punch
   m_EditorClassIdentifier: 
-  ActionName: Test Action
-  ActionDescription: This is a test action!
-  ActionColor: {r: 0.7735849, g: 0, b: 0, a: 1}
-  ActionAnim: {fileID: 0}
+  AnimationTrigger: Punch
+  ActionName: PUNCH
+  ActionDescription: Punch 1 player within 1 tile for 1 damage
+  ActionColor: {r: 0.7484276, g: 0, b: 0, a: 1}
   NumTargets: 1
   ActionDistance: 1
+  ActionDamage: 1

@@ -117,6 +117,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6908974558131428728}
   - component: {fileID: 5789236828834995734}
+  - component: {fileID: 9067268542847946567}
   m_Layer: 0
   m_Name: PlayerPrefab
   m_TagString: Untagged
@@ -163,8 +164,31 @@ MonoBehaviour:
   InactiveTurnMaterial: {fileID: 2100000, guid: 02267fdd3cd1b8144a8e54da936c50d8, type: 2}
   SelectedTurnIdMaterial: {fileID: 2100000, guid: 4ab0f292c49c3e341851785008c5f3c7, type: 2}
   SelectableTurnIdMaterial: {fileID: 2100000, guid: 9c7acfd26d162ac4298f8bf810143c2b, type: 2}
-  animator: {fileID: 0}
+  Animator: {fileID: 0}
   Action1: {fileID: 0}
   Action2: {fileID: 0}
   Action3: {fileID: 0}
   Action4: {fileID: 0}
+  currentAction: {fileID: 0}
+  currentActionTarget: {fileID: 0}
+--- !u!95 &9067268542847946567
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9087357953501410537}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: fd7d68a65822e4a44a9ef78850e64cfc, type: 3}
+  m_Controller: {fileID: 9100000, guid: b8173a5c614c0a84893fc9bc98936df4, type: 2}
+  m_CullingMode: 1
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

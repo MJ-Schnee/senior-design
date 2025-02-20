@@ -100,7 +100,7 @@ public class Enemy : Player
     void Awake()
     {
         GameManager.OnEndTurn += OnEndTurn;
-        animator = GetComponent<Animator>();
+        Animator = GetComponentInChildren<Animator>();
         PlayerHp_curr = PlayerHp_max;
         // TODO: Individualize icons by enemy type
         IconColor = Color.red;

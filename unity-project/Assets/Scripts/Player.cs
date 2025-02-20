@@ -19,10 +19,13 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
     private bool isMyTurn;
 
-    [SerializeField]
-    protected Animator animator;
+    public Animator Animator;
 
     public BaseAction Action1, Action2, Action3, Action4;
+
+    public BaseAction currentAction;
+    
+    public Player currentActionTarget;
 
     void Awake()
     {
@@ -129,7 +132,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         }
 
         // Move player along path
-        animator.SetBool("IsMoving", true);
+        Animator.SetBool("IsMoving", true);
         if (tilePath != null && tilePath.Count > 0)
         {
             RemainingSpeed -= tilePath.Count;
@@ -160,7 +163,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
                 transform.position = targetPosition;
             }
         }
-        animator.SetBool("IsMoving", false);
+        Animator.SetBool("IsMoving", false);
         // Calling function to check if we ended on a door and edge tile
         // TODO make this work in the OnEndTurn function or 
         // otherwise run when the player hits end turn button
@@ -182,5 +185,39 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     public void OnPointerClick(PointerEventData eventData)
     {
         ActionTargetingManager.Instance.HandlePlayerClicked(this);
+    }
+
+    /// <summary>
+    /// Deals damage to this player and plays the hurt animation
+    /// </summary>
+    public void DealDamage(int amount)
+    {
+        PlayerHp_curr = Mathf.Max(PlayerHp_curr - amount, 0);
+
+        // Only need to update player panel if current player is damaged
+        if (this == GameManager.Instance.TurnOrder.GetCurrentTurn())
+        {
+            UiManager.Instance.UpdatePlayerPanel(this);
+        }
+
+        Animator.SetTrigger("Hurt");
+
+        if (PlayerHp_curr <= 0)
+        {
+            // TODO: Add death animation with revive
+            Debug.Log($"{name} died");
+            gameObject.SetActive(false);
+            GameManager.Instance.RemoveTurn(this);
+        }
+    }
+
+    /// <summary>
+    /// Generic event triggered by action animation to apply action's effects
+    /// </summary>
+    public void OnActionImpact()
+    {
+        Debug.Log($"{name}'s OnActionImpact event triggered.");
+
+        currentAction.ApplyImpact(this, currentActionTarget);
     }
 }

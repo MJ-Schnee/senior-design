@@ -569,8 +569,8 @@ MonoBehaviour:
   otherPlayerImage: {fileID: 405770586}
   otherPlayerName: {fileID: 1777823366}
   otherPlayerAc: {fileID: 834376632}
-  otherPlayerHp_max: {fileID: 1588737530}
-  otherPlayerHp_curr: {fileID: 290843709}
+  otherPlayerHp_max: {fileID: 290843709}
+  otherPlayerHp_curr: {fileID: 1588737530}
   otherPlayerSpeed: {fileID: 636465020}
   InspectorTimerSec: 0.5
   ActionButton1: {fileID: 1113700108}
@@ -589,7 +589,7 @@ GameObject:
   - component: {fileID: 290843710}
   - component: {fileID: 290843709}
   m_Layer: 5
-  m_Name: PlayerHpCurrText
+  m_Name: PlayerHpMaxText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2511,7 +2511,8 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: b8173a5c614c0a84893fc9bc98936df4, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 9536910, guid: dac2afd5e1dda1c4d9fe05cf141b47f0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -2519,11 +2520,6 @@ PrefabInstance:
 --- !u!4 &887348148 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 463752, guid: dac2afd5e1dda1c4d9fe05cf141b47f0, type: 3}
-  m_PrefabInstance: {fileID: 887348147}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &887348149 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 9536910, guid: dac2afd5e1dda1c4d9fe05cf141b47f0, type: 3}
   m_PrefabInstance: {fileID: 887348147}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &938719522
@@ -3019,13 +3015,17 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
+      propertyPath: Animator
+      value: 
+      objectReference: {fileID: 1700951127}
+    - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: PlayerAc
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: animator
       value: 
-      objectReference: {fileID: 1983012828}
+      objectReference: {fileID: 0}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: IconColor.b
       value: 1
@@ -3394,7 +3394,7 @@ GameObject:
   - component: {fileID: 1588737531}
   - component: {fileID: 1588737530}
   m_Layer: 5
-  m_Name: PlayerHpMaxText
+  m_Name: PlayerHpCurrText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3636,6 +3636,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1652937365}
   m_CullTransparentMesh: 1
+--- !u!95 &1700951127 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9067268542847946567, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
+  m_PrefabInstance: {fileID: 1374601511}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1760988967
 GameObject:
   m_ObjectHideFlags: 0
@@ -4381,7 +4386,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1969522632
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4770,7 +4775,8 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: b8173a5c614c0a84893fc9bc98936df4, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 9551260, guid: 55baa12c54e933f44a6f55a515a15199, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -4778,11 +4784,6 @@ PrefabInstance:
 --- !u!4 &1983012827 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 436190, guid: 55baa12c54e933f44a6f55a515a15199, type: 3}
-  m_PrefabInstance: {fileID: 1983012826}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &1983012828 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 9551260, guid: 55baa12c54e933f44a6f55a515a15199, type: 3}
   m_PrefabInstance: {fileID: 1983012826}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &2007210084
@@ -5332,7 +5333,11 @@ PrefabInstance:
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: Action1
       value: 
-      objectReference: {fileID: 11400000, guid: 210180540622ec34d91cec3f9aa30606, type: 2}
+      objectReference: {fileID: 11400000, guid: 427d4b470e1538a49b654f3f1be1016a, type: 2}
+    - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
+      propertyPath: Animator
+      value: 
+      objectReference: {fileID: 962039922489728495}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: PlayerAc
       value: 12
@@ -5340,7 +5345,7 @@ PrefabInstance:
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: animator
       value: 
-      objectReference: {fileID: 887348149}
+      objectReference: {fileID: 0}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: PlayerHp_max
       value: 20
@@ -5413,6 +5418,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16f8b1e632b400c4bac15476e33c60fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &962039922489728495 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9067268542847946567, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
+  m_PrefabInstance: {fileID: 736079280854217231}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
