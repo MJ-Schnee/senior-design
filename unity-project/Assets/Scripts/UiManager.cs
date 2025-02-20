@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -21,6 +20,10 @@ public class UiManager : MonoBehaviour
     public GameObject TurnIconPrefab;
 
     public Transform UpNextPanel;
+
+    public Canvas MainCanvas;
+
+    public GameObject HitMissPrefab;
 
     #region Player Panel Stats
     [Header("Player Panel Stats")]
@@ -293,5 +296,18 @@ public class UiManager : MonoBehaviour
             playerAction,
             currentPlayer
         );
+    }
+
+    /// <summary>
+    /// Creates HIT/MISS floating text at position in the world
+    /// </summary>
+    public void ShowHitMissIndicator(string text, Color color, Transform trackingTransform)
+    {
+        GameObject hitMissTextObj = Instantiate(HitMissPrefab, MainCanvas.transform);
+        if (hitMissTextObj.TryGetComponent(out HitMissText hitMissText))
+        {
+            hitMissText.Target = trackingTransform;
+            hitMissText.SetText(text, color);
+        }
     }
 }

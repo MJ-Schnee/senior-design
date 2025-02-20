@@ -40,6 +40,16 @@ public class BaseAction : ScriptableObject
     /// </summary>
     public void ApplyImpact(Player actingPlayer, Player targetPlayer)
     {
-        targetPlayer.DealDamage(ActionDamage);
+        // Roll D20 against AC for hit
+        int diceResult = Random.Range(1, 21);
+        if (diceResult >= targetPlayer.PlayerAc)
+        {
+            targetPlayer.DealDamage(ActionDamage);
+            UiManager.Instance.ShowHitMissIndicator("HIT", Color.green, targetPlayer.transform);
+        }
+        else
+        {
+            UiManager.Instance.ShowHitMissIndicator("MISS", Color.red, targetPlayer.transform);
+        }
     }
 }

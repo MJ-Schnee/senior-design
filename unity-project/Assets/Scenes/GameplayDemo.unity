@@ -559,6 +559,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TurnIconPrefab: {fileID: 5402437706755692207, guid: cd51f6ec8705c3946b458cb3798f6381, type: 3}
   UpNextPanel: {fileID: 1835645240}
+  MainCanvas: {fileID: 177424197}
+  HitMissPrefab: {fileID: 5112792808373029590, guid: bcd65f23e26c01542975ff3efb07c55b, type: 3}
   playerImage: {fileID: 680114642}
   playerName: {fileID: 2049524108}
   playerAc: {fileID: 1937280475}
