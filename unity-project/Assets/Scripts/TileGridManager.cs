@@ -28,37 +28,18 @@ public class TileGridManager : MonoBehaviour
     
     void Start()
     {
-        // Instantiate tiles with center as origin
-        for (int i = -gridWidth/2; i <= gridWidth/2; i++)
-        {
-            for (int j = -gridHeight/2; j <= gridHeight/2; j++)
-            {
-                GameObject tile = Instantiate(tilePrefab, new Vector3(i, 0, j), Quaternion.identity, transform);
-                TileGrid_tile.Add(tile, (i, j));
-                TileGrid_coord.Add((i, j), tile);
-            }
-        }
-        // Change certain tiles into wall
-        for (int i = -gridWidth/2; i <= gridWidth/2; i++)
-        {
-            for (int j = -gridHeight/2; j <= gridHeight/2; j++)
-            {
-                if(checkEdge(i,j) != 0)
-                {
-                    GetTileAtLoc(i,j).toggleWall(true);
-                }
-            }
-        }
+        // Instantiate tiles
+        addBaseRoom(20,20);
         // Change certain tiles into door
-        for(int k = gridWidth/2; k <= (gridWidth+6)/2; k++)
+        for(int k = gridWidth; k <= (gridWidth+3); k++)
         {
-            Tile tileD = GetTileAtLoc(gridWidth/2, k-12);
+            Tile tileD = GetTileAtLoc(gridWidth, k-12);
             tileD.toggleWall(false);
             tileD.toggleDoor(true);
         }
-        for(int l = gridHeight/2; l <= (gridHeight+6)/2; l++)
+        for(int l = gridHeight; l <= (gridHeight+3); l++)
         {
-            Tile tileD = GetTileAtLoc(l-12, gridHeight/2);
+            Tile tileD = GetTileAtLoc(l-12, gridHeight);
             tileD.toggleWall(false);
             tileD.toggleDoor(true);
         }
@@ -232,6 +213,41 @@ public class TileGridManager : MonoBehaviour
     // Function creates a new Room, input is the coordinates of the top corner of the new room
     public void newRoom(int x, int z)
     {   
+        // Adds basic layout every room will have
+        addBaseRoom(x,z);
+        // Randomly chooses between several different room options
+        int kRoom = Random.Range(1,5);
+        switch(kRoom)
+        {
+            case 1:
+                twoRoom(x,z);
+                break;
+            case 2:
+                twoRoomv2(x,z);
+                break;
+            case 3:
+                twoRoomv3(x,z);
+                break;
+            case 4:
+                twoRoomv4(x,z);
+                break;
+            default:
+                break;
+        }
+    }
+
+    // Creates an enemy in the center of the room
+    public void spawnEnemy(int x, int z)
+    {
+        GetTileAtLoc((x - gridWidth/2),(z - gridHeight/2)).toggleEnemy(true);
+        GameManager.Instance.GenerateRandomEnemy(x - gridWidth/2,z - gridHeight/2);
+    }
+
+    // List of rooms being created
+    // the first part of the name of the function is the number of doors each room has
+
+    public void zeroRoom(int x, int z)
+    {
         for (int i = x; i > (x-gridWidth); i--)
         {
             for (int j = z; j > (z-gridHeight); j--)
@@ -252,14 +268,121 @@ public class TileGridManager : MonoBehaviour
                 }
             }
         }
-        // For demo purposes creating a tile for enemy spawn
-        GetTileAtLoc((x - gridWidth/2),(z - gridHeight/2)).toggleEnemy(true);
-        GameManager.Instance.GenerateRandomEnemy(x - gridWidth/2,z - gridHeight/2);
+    }
+    public void oneRoom(int x, int z)
+    {
+        for (int i = (x-(gridWidth/2) + 2); i > (x-gridWidth/2 -2); i--)
+        {
+            GetTileAtLoc(i,z).toggleWall(false);
+            GetTileAtLoc(i,z).toggleDoor(true);
+        }
+    }
+    public void oneRoomv2(int x, int z)
+    {
+        for (int i = (z-(gridHeight/2) + 2); i > (z-gridHeight/2 - 2); i--)
+        {
+            GetTileAtLoc(x,i).toggleWall(false);
+            GetTileAtLoc(x,i).toggleDoor(true);
+        }
+    }
+    public void twoRoom(int x, int z)
+    {
+
+        for (int i = (z-(gridHeight/2) + 2); i > (z-gridHeight/2 - 2); i--)
+        {
+            GetTileAtLoc(x-20,i).toggleWall(false);
+            GetTileAtLoc(x-20,i).toggleDoor(true);
+        }
+        for (int i = (x-(gridWidth/2) + 2); i > (x-gridWidth/2 -2); i--)
+        {
+            GetTileAtLoc(i,z-20).toggleWall(false);
+            GetTileAtLoc(i,z-20).toggleDoor(true);
+        }
+        spawnEnemy(x,z);
+    }
+    public void twoRoomv2(int x, int z)
+    {
+
+        for (int i = (z-(gridHeight/2) + 2); i > (z-gridHeight/2 - 2); i--)
+        {
+            GetTileAtLoc(x,i).toggleWall(false);
+            GetTileAtLoc(x,i).toggleDoor(true);
+        }
+        for (int i = (x-(gridWidth/2) + 2); i > (x-gridWidth/2 -2); i--)
+        {
+            GetTileAtLoc(i,z).toggleWall(false);
+            GetTileAtLoc(i,z).toggleDoor(true);
+        }
+        spawnEnemy(x,z);
+    }
+    public void twoRoomv3(int x, int z)
+    {
+
+        for (int i = (z-(gridHeight/2) + 2); i > (z-gridHeight/2 - 2); i--)
+        {
+            GetTileAtLoc(x-20,i).toggleWall(false);
+            GetTileAtLoc(x-20,i).toggleDoor(true);
+        }
+        for (int i = (x-(gridWidth/2) + 2); i > (x-gridWidth/2 -2); i--)
+        {
+            GetTileAtLoc(i,z).toggleWall(false);
+            GetTileAtLoc(i,z).toggleDoor(true);
+        }
+        spawnEnemy(x,z);
+    }
+    public void twoRoomv4(int x, int z)
+    {
+
+        for (int i = (z-(gridHeight/2) + 2); i > (z-gridHeight/2 - 2); i--)
+        {
+            GetTileAtLoc(x,i).toggleWall(false);
+            GetTileAtLoc(x,i).toggleDoor(true);
+        }
+        for (int i = (x-(gridWidth/2) + 2); i > (x-gridWidth/2 -2); i--)
+        {
+            GetTileAtLoc(i,z-gridHeight).toggleWall(false);
+            GetTileAtLoc(i,z-gridHeight).toggleDoor(true);
+        }
+        spawnEnemy(x,z);
+    }
+
+    // makes the gridWidth x gridHeight number of tiles and changes any edge tiles to wall tiles
+    public void addBaseRoom(int x, int z)
+    {
+        for (int i = x; i >= (x-gridWidth); i--)
+        {
+            for (int j = z; j >= (z-gridHeight); j--)
+            {
+                if (!checkExists(i,j))
+                {
+                    GameObject tile = Instantiate(tilePrefab, new Vector3(i, 0, j), Quaternion.identity, transform);
+                    TileGrid_tile.Add(tile, (i, j));
+                    TileGrid_coord.Add((i, j), tile);
+                }
+            }
+        }
+        // Changes certain tiles into wall tiles
+        for (int i = x; i >= (x-gridWidth); i--)
+        {
+            for (int j = z; j >= (z-gridHeight); j--)
+            {
+                if(checkEdge(i,j) != 0)
+                {
+                    GetTileAtLoc(i,j).toggleWall(true);
+                }
+            }
+        }
+    }
+
+    // checks if a tile already exists at set coordinates
+    public bool checkExists(int x, int z)
+    {
+        (int, int) tile = (x,z);
+        return TileGrid_coord.ContainsKey(tile);
     }
 
     // Function that checks if this is an edge tile, input is coordinates of the tile
     // Output is number dependent on which direction this is an edge tile for.
-    // TODO make this work in the negative directions as well
     public int checkEdge(int x, int z)
     {
         (int, int) tile = (x,z);
@@ -277,18 +400,17 @@ public class TileGridManager : MonoBehaviour
         }
 
         // For the negative directions
-        // Editing note: maybe return 3 and 4 and make seperate cases?
         XE = (0,-1);
         ZE = (-1,0);
         (int, int) neighbor3 = (tile.Item1 + XE.Item1, tile.Item2 + XE.Item2);
         if (!(TileGrid_coord.ContainsKey(neighbor3)))
         {
-            return 2;
+            return 4;
         }
         (int, int) neighbor4 = (tile.Item1 + ZE.Item1, tile.Item2 + ZE.Item2);
         if (!(TileGrid_coord.ContainsKey(neighbor4)))
         {
-            return 1;
+            return 3;
         }
         return 0;
     }

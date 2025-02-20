@@ -65,40 +65,60 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         int checkE = TileGridManager.Instance.checkEdge(positionX, positionZ);
         Tile checkDoor = TileGridManager.Instance.GetTileAtLoc(positionX, positionZ);
         bool checkD = checkDoor.getDoor();
+        int Z, X;
         if(checkD)
         {
-            //Based on which direction the door is facing we create our new room
-            if(checkE == 1)
+            // Based on which direction the edge is, we create the new room
+            // We do this because we need to input the top right corner of the new room
+            // Which varies based on which direction our edge is.
+            switch(checkE)
             {
-                // for the positive X direction
-                if(positionX > 0)
-                {
-                    // for first new room Z is some number prob between -1 and 1
-                    // we set that to 10 so its the top corner
-                    // we know we are already at the edge of X so we just add the size of our new room
-                    int Z = 10 * (Mathf.FloorToInt (positionZ/10) + 1);
+                case 1:
+                    if(positionZ > 0)
+                    {
+                        Z = 20 * (Mathf.FloorToInt (positionZ/20) + 1);
+                    }
+                    else
+                    {
+                        Z = 20 * (Mathf.FloorToInt (positionZ/20));
+                    }
                     TileGridManager.Instance.newRoom(positionX + 20, Z);
-                }
-                /*else
-                {
-                    TileGridManager.Instance.newRoom(positionX - 20, positionZ);
-                }*/
-            }
-            else if(checkE == 2)
-            {
-                if(positionZ > 0)
-                {
-                    // for first new room X is some number prob between -1 and 1
-                    // we set that to 10 so its the top corner
-                    // we know we are already at the edge of Z so we just add the size of our new room
-                    int X = 10 * (Mathf.FloorToInt (positionX/10) + 1);
+                    break;
+                case 2:
+                    if(positionX > 0)
+                    {
+                        X = 20 * (Mathf.FloorToInt (positionX/20) + 1);
+                    }
+                    else
+                    {
+                        X = 20 * (Mathf.FloorToInt (positionX/20));
+                    }
                     TileGridManager.Instance.newRoom(X, positionZ + 20);
-                }
-                /*
-                else
-                {
-                    TileGridManager.Instance.newRoom(positionX, positionZ - 20);
-                }*/
+                    break;
+                case 3:
+                    if(positionZ > 0)
+                    {
+                        Z = 20 * (Mathf.FloorToInt (positionZ/20) + 1);
+                    }
+                    else
+                    {
+                        Z = 20 * (Mathf.FloorToInt (positionZ/20));
+                    }
+                    TileGridManager.Instance.newRoom(positionX, Z);
+                    break;
+                case 4:
+                    if(positionX > 0)
+                    {
+                        X = 20 * (Mathf.FloorToInt (positionX/20) + 1);
+                    }
+                    else
+                    {
+                        X = 20 * (Mathf.FloorToInt (positionX/20));
+                    }
+                    TileGridManager.Instance.newRoom(X, positionZ);
+                    break;
+                default:
+                    break;       
             }
         }
     }
