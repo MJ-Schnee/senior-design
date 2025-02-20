@@ -17,7 +17,8 @@ public class CircularLinkedList<T>
     private Node<T> head;
     private Node<T> current;
 
-    public void Add(T data)
+    // Add data to end of list's first iteration
+    public void AddToEnd(T data)
     {
         Node<T> newNode = new(data);
         if (head == null)
@@ -28,13 +29,45 @@ public class CircularLinkedList<T>
         else
         {
             Node<T> temp = head;
-            while (temp.Next != head) // Find the last node
+            while (temp.Next != head)
             {
                 temp = temp.Next;
             }
             temp.Next = newNode;
-            newNode.Next = head; // Maintain circular structure
+            newNode.Next = head;
         }
+    }
+
+    // Add data after existing data is found
+    // If first iteration end is found without existing data, throw exception
+    public void AddAfter(T newData, T existingData)
+    {
+        if (head == null)
+        {
+            throw new System.Exception("existingData not found in CircularLinkedList");
+        }
+
+        // Search for the node containing existingData
+        Node<T> temp = head;
+        do
+        {
+            if (temp.Data.Equals(existingData))
+            {
+                // Found the node where we should insert newData after it
+                Node<T> newNode = new(newData)
+                {
+                    Next = temp.Next
+                };
+                temp.Next = newNode;
+
+                return;
+            }
+            temp = temp.Next;
+        } 
+        while (temp != head);
+
+        // If we exit the loop, afterData was not found
+        throw new System.Exception("existingData not found in CircularLinkedList");
     }
 
     public bool Remove(T data)

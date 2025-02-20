@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
 
     public List<Player> InitialPlayerList;
 
+    public Enemy enemyFab;
+
     public CircularLinkedList<Player> TurnOrder;
 
     public static event Action<Player> OnEndTurn;
@@ -20,15 +22,16 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this);
 
         TurnOrder = new();
-
-        foreach (Player player in InitialPlayerList)
-        {
-            AddTurn(player);
-        }
     }
 
     void Start()
     {
+        // Wait for UI to Awake
+        foreach (Player player in InitialPlayerList)
+        {
+            AddTurn(player);
+        }
+
         StartCoroutine(StartFirstTurn());
     }
 
@@ -51,14 +54,31 @@ public class GameManager : MonoBehaviour
         EndTurn();
     }
 
-    public void AddTurn(Player newPlayer)
+    public void AddTurn(Player newPlayer, bool afterCurrentPlayer = false)
     {
-        TurnOrder.Add(newPlayer);
+        if (afterCurrentPlayer)
+        {
+            TurnOrder.AddAfter(newPlayer, TurnOrder.GetCurrentTurn());
+        }
+        else
+        {
+            TurnOrder.AddToEnd(newPlayer);
+        }
+        UiManager.Instance.UpdateUpNextPanel();
     }
 
     public bool RemoveTurn(Player removedPlayer)
     {
-        return TurnOrder.Remove(removedPlayer);
+        bool removed = TurnOrder.Remove(removedPlayer);
+        UiManager.Instance.UpdateUpNextPanel();
+        return removed;
+    }
+
+    // TODO: Make more enemy options so it's actually random lol
+    public Enemy GenerateRandomEnemy(int x, int y) {
+        Enemy e = Instantiate(enemyFab, new Vector3(x,0,y), Quaternion.identity, transform);
+        AddTurn(e, afterCurrentPlayer: true);
+        return e;
     }
 }
 
@@ -67,7 +87,6 @@ public class GameManager : MonoBehaviour
 [CustomEditor(typeof(GameManager))]
 public class GameManagerEditor : Editor
 {
-
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();

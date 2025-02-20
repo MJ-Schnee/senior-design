@@ -529,6 +529,7 @@ MonoBehaviour:
   InitialPlayerList:
   - {fileID: 962039922489728494}
   - {fileID: 1374601513}
+  enemyFab: {fileID: 5604584777461859994, guid: d02fb146ac3449149bee9c408754fc61, type: 3}
 --- !u!4 &289611107
 Transform:
   m_ObjectHideFlags: 0
@@ -2516,6 +2517,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 463752, guid: dac2afd5e1dda1c4d9fe05cf141b47f0, type: 3}
   m_PrefabInstance: {fileID: 887348147}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &887348149 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9536910, guid: dac2afd5e1dda1c4d9fe05cf141b47f0, type: 3}
+  m_PrefabInstance: {fileID: 887348147}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &938719522
 GameObject:
   m_ObjectHideFlags: 0
@@ -3004,10 +3010,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4870988698973056012, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: PlayerAc
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 1983012828}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: IconColor.b
       value: 1
@@ -3787,7 +3801,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -10, y: -10}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 428, y: 50}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1777823366
 MonoBehaviour:
@@ -3854,7 +3868,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
+  m_overflowMode: 1
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
@@ -4718,6 +4732,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 436190, guid: 55baa12c54e933f44a6f55a515a15199, type: 3}
   m_PrefabInstance: {fileID: 1983012826}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &1983012828 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9551260, guid: 55baa12c54e933f44a6f55a515a15199, type: 3}
+  m_PrefabInstance: {fileID: 1983012826}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2007210084
 GameObject:
   m_ObjectHideFlags: 0
@@ -4840,12 +4859,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd193b9be282ddf48ae6457785398c53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseMoveSpeed: 10
-  maxMoveSpeed: 10
+  panSpeed: 0.4
   zoomSpeed: 5
   minZoom: 0.5
   maxZoom: 12
-  zoomMultiplier: 3
+  zoomMultiplier: 1.3
 --- !u!1 &2015135190
 GameObject:
   m_ObjectHideFlags: 0
@@ -5016,7 +5034,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 18, y: -18}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 415, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2049524108
 MonoBehaviour:
@@ -5083,7 +5101,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
+  m_overflowMode: 1
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
@@ -5258,10 +5276,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4870988698973056012, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: PlayerAc
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 887348149}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: PlayerHp_max
       value: 20

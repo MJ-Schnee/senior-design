@@ -4,7 +4,6 @@ using UnityEngine;
 public class TileGridManager : MonoBehaviour
 {
     public static TileGridManager Instance;
-
     public GameObject tilePrefab;
     
     // Bi-Directional searching for tile by object or coordinate
@@ -46,31 +45,31 @@ public class TileGridManager : MonoBehaviour
             {
                 if(checkEdge(i,j) != 0)
                 {
-                    getTile(i,j).toggleWall(true);
+                    GetTileAtLoc(i,j).toggleWall(true);
                 }
             }
         }
         // Change certain tiles into door
         for(int k = gridWidth/2; k <= (gridWidth+6)/2; k++)
         {
-            Tile tileD = getTile(gridWidth/2, k-12);
+            Tile tileD = GetTileAtLoc(gridWidth/2, k-12);
             tileD.toggleWall(false);
             tileD.toggleDoor(true);
         }
         for(int l = gridHeight/2; l <= (gridHeight+6)/2; l++)
         {
-            Tile tileD = getTile(l-12, gridHeight/2);
+            Tile tileD = GetTileAtLoc(l-12, gridHeight/2);
             tileD.toggleWall(false);
             tileD.toggleDoor(true);
         }
     }
 
     // Function to get a tile at specific coordinates
-    public Tile getTile(int x, int y)
+    public Tile GetTileAtLoc(int x, int z)
     {
-        TileGrid_coord.TryGetValue((x,y), out GameObject tile);
-        tile.TryGetComponent(out Tile tileComponenet);
-        return tileComponenet;
+        GameObject tile = TileGrid_coord[(x, z)];
+        Tile tileComponent = tile.GetComponent<Tile>();
+        return tileComponent;
     }
 
     public void HighlightReachableTiles(int x_cen, int y_cen, int range)
@@ -80,15 +79,47 @@ public class TileGridManager : MonoBehaviour
             return;
         }
 
-        for (int i = x_cen - range; i <= x_cen + range; i++)
+        (int, int) startPos = (x_cen, y_cen);
+
+        Queue<(int, int)> frontier = new();
+        Dictionary<(int, int), int> distance = new();
+        frontier.Enqueue(startPos);
+        distance[startPos] = 0;
+
+        // Breadth-First Search
+        while (frontier.Count > 0)
         {
-            for (int j = y_cen - range; j <= y_cen + range; j++)
+            // Dequeue a tile
+            (int, int) currentPos = frontier.Dequeue();
+            int currentDist = distance[currentPos];
+
+            // Highlight this tile, since it's reachable
+            Tile currTile = GetTileAtLoc(currentPos.Item1, currentPos.Item2);
+            currTile.ToggleHighlight(true);
+            highlightedTiles.Add(currTile.gameObject);
+
+            // Don't enqueue neighbors beyond range
+            if (currentDist >= range)
             {
-                TileGrid_coord.TryGetValue((i, j), out GameObject tile);
-                if (tile != null && tile.TryGetComponent(out Tile tileComponent) && tileComponent.IsWalkable)
+                continue;
+            }
+
+            // Check neighbors
+            foreach (var neighborPos in GetNeighbors(currentPos))
+            {
+                // Already visited?
+                if (distance.ContainsKey(neighborPos))
                 {
-                    tileComponent.ToggleHighlight(true);
-                    highlightedTiles.Add(tile);
+                    continue;
+                }
+
+                // Make sure it's walkable before enqueueing
+                Tile neighborTile = GetTileAtLoc(neighborPos.Item1, neighborPos.Item2);
+                if (neighborTile.IsWalkable)
+                {
+                    // Mark distance and enqueue
+                    distance[neighborPos] = currentDist + 1;
+                    frontier.Enqueue(neighborPos);
                 }
             }
         }
@@ -98,7 +129,7 @@ public class TileGridManager : MonoBehaviour
     {
         foreach (GameObject tile in highlightedTiles)
         {
-            tile.TryGetComponent(out Tile tileComponent);
+            Tile tileComponent = tile.GetComponent<Tile>();
             tileComponent.ToggleHighlight(false);
         }
         highlightedTiles.Clear();
@@ -142,7 +173,8 @@ public class TileGridManager : MonoBehaviour
             foreach ((int, int) next in GetNeighbors(current))
             {
                 TileGrid_coord.TryGetValue(next, out GameObject tile);
-                if (tile == null || !tile.TryGetComponent(out Tile tileComponent) || !tileComponent.IsWalkable)
+                // Only VALID tiles (or a non-valid goal tile)
+                if (!(next == goal) && (tile == null || !tile.TryGetComponent(out Tile tileComponent) || !tileComponent.IsWalkable))
                 {
                     continue;
                 }
@@ -185,19 +217,24 @@ public class TileGridManager : MonoBehaviour
 
         while (current != null && current != start)
         {
-            path.Add(TileGrid_coord[current.Value]);
+            GameObject tileObj = TileGrid_coord[current.Value];
+            // Remove added tiles that aren't walkable (player goal tile)
+            if (tileObj.GetComponent<Tile>().IsWalkable)
+            {
+                path.Add(tileObj);
+            }
             current = cameFrom[current.Value];
         }
         path.Reverse();
         return path;
     }
 
-    // Function creates a new Room, input is the coordinates of the top cornor of the new room
-    public void newRoom(int x, int y)
+    // Function creates a new Room, input is the coordinates of the top corner of the new room
+    public void newRoom(int x, int z)
     {   
         for (int i = x; i > (x-gridWidth); i--)
         {
-            for (int j = y; j > (y-gridHeight); j--)
+            for (int j = z; j > (z-gridHeight); j--)
             {
                 GameObject tile = Instantiate(tilePrefab, new Vector3(i, 0, j), Quaternion.identity, transform);
                 TileGrid_tile.Add(tile, (i, j));
@@ -207,16 +244,17 @@ public class TileGridManager : MonoBehaviour
         // Changes certain tiles into wall tiles
         for (int i = x; i > (x-gridWidth); i--)
         {
-            for (int j = y; j > (y-gridHeight); j--)
+            for (int j = z; j > (z-gridHeight); j--)
             {
                 if(checkEdge(i,j) != 0)
                 {
-                    getTile(i,j).toggleWall(true);
+                    GetTileAtLoc(i,j).toggleWall(true);
                 }
             }
         }
         // For demo purposes creating a tile for enemy spawn
-        getTile((x - gridWidth/2),(y - gridHeight/2)).toggleEnemy(true);
+        GetTileAtLoc((x - gridWidth/2),(z - gridHeight/2)).toggleEnemy(true);
+        GameManager.Instance.GenerateRandomEnemy(x - gridWidth/2,z - gridHeight/2);
     }
 
     // Function that checks if this is an edge tile, input is coordinates of the tile

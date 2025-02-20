@@ -99,17 +99,17 @@ public class UiManager : MonoBehaviour
         playerImageButton.onClick.AddListener(() => CameraController.Instance.CenterObject(currentPlayer.gameObject));
     }
 
-    void UpdatePlayerPanel(Player player)
+    public void UpdatePlayerPanel(Player player)
     {
         playerImage.color = player.IconColor;
         playerName.text = player.name;
         playerAc.text = player.PlayerAc.ToString("D2");
         playerHp_max.text = player.PlayerHp_max.ToString("D2");
         playerHp_curr.text = player.PlayerHp_curr.ToString("D2");
-        playerSpeed.text = player.PlayerSpeed.ToString("D2");
+        playerSpeed.text = player.RemainingSpeed.ToString("D2");
     }
 
-    void UpdateUpNextPanel()
+    public void UpdateUpNextPanel()
     {
         // Destroy all current icons in panel
         foreach (var icon in turnIcons)
@@ -149,8 +149,14 @@ public class UiManager : MonoBehaviour
 
             // Example coloring for different players
             icon.TryGetComponent(out Image iconImage);
-            int playerNum = int.Parse(player.name[7..]);
-            icon.name = $"Player {playerNum} icon ({i})";
+            if (player.GetType() == typeof(Enemy)) {
+                icon.name = "Example Enemy";
+            }
+            else
+            {
+                int playerNum = int.Parse(player.name[7..]);
+                icon.name = $"Player {playerNum} icon ({i})";
+            }
             iconImage.color = player.IconColor;
 
             turnIcons.Add(icon);
@@ -159,6 +165,9 @@ public class UiManager : MonoBehaviour
 
     void HandleEndTurn(Player nextTurnPlayer)
     {
+        uiState = UiState.Idle;
+        TileGridManager.Instance.UnhighlightAllTiles();
+
         UpdatePlayerPanel(nextTurnPlayer);
         UpdateUpNextPanel();
         currentPlayer = nextTurnPlayer;
@@ -178,8 +187,8 @@ public class UiManager : MonoBehaviour
         if (uiState == UiState.Moving)
         {
             TileGridManager.Instance.HighlightReachableTiles(
-                (int)Math.Round(currentPlayer.transform.position.x),
-                (int)Math.Round(currentPlayer.transform.position.z),
+                Mathf.RoundToInt(currentPlayer.transform.position.x),
+                Mathf.RoundToInt(currentPlayer.transform.position.z),
                 currentPlayer.RemainingSpeed
             );
         }
@@ -213,7 +222,7 @@ public class UiManager : MonoBehaviour
         if (currentPlayer == otherPlayer)
         {
             otherPlayerStats.SetActive(false);
-            yield return null;
+            yield break;
         }
 
         otherPlayerImage.color = otherPlayer.IconColor;
@@ -223,7 +232,6 @@ public class UiManager : MonoBehaviour
         otherPlayerHp_curr.text = otherPlayer.PlayerHp_curr.ToString("D2");
         otherPlayerSpeed.text = otherPlayer.PlayerSpeed.ToString("D2");
         otherPlayerStats.SetActive(true);
-        yield return null;
     }
 
     public void HidePlayerInspector()

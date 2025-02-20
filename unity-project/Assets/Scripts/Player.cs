@@ -15,12 +15,12 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private bool isMyTurn;
 
-    private Animator animator;
+    [SerializeField]
+    protected Animator animator;
 
     void Awake()
     {
         GameManager.OnEndTurn += OnEndTurn;
-        animator = GetComponent<Animator>();
         PlayerHp_curr = PlayerHp_max;
     }
 
@@ -37,21 +37,33 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             isMyTurn = false;
             TurnIdentifierRenderer.material = InactiveTurnMaterial;
         }
+
+        Tile currentTile = GetCurrentTile();
+        currentTile.IsWalkable = isMyTurn;
     }
+
+    public Tile GetCurrentTile()
+    {
+        int positionX = Mathf.RoundToInt(transform.position.x);
+        int positionZ = Mathf.RoundToInt(transform.position.z);
+        Tile currentTile = TileGridManager.Instance.GetTileAtLoc(positionX, positionZ);
+        return currentTile;
+    }
+
     // This function checks if the tile we are on is a door tile and an edge tile,
-    // If it is then we create a new room, inputing the coordinates of the top cornor of the new room.
+    // If it is then we create a new room, inputting the coordinates of the top corner of the new room.
     // TODO make this work in the negative directions
     public void endT()
     {
         // Get our current position
-        int positionX = (int)Mathf.Round(transform.position.x);
-        int positionZ = (int)Mathf.Round(transform.position.z);
+        int positionX = Mathf.RoundToInt(transform.position.x);
+        int positionZ = Mathf.RoundToInt(transform.position.z);
 
         // Checks to make sure this is a door tile and an edge tile
         // If its not an edge tile we know we already "opened" this door
 
         int checkE = TileGridManager.Instance.checkEdge(positionX, positionZ);
-        Tile checkDoor = TileGridManager.Instance.getTile(positionX, positionZ);
+        Tile checkDoor = TileGridManager.Instance.GetTileAtLoc(positionX, positionZ);
         bool checkD = checkDoor.getDoor();
         if(checkD)
         {
@@ -90,13 +102,14 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             }
         }
     }
+
     public IEnumerator MoveTo(Transform newTransform)
     {
-        float walkSpeed = 7.0f;
-        float turnSpeed = 10.0f;
+        float walkSpeed = 8.0f;
+        float turnSpeed = 15.0f;
 
-        (int, int) startTileLoc = ((int)transform.position.x, (int)transform.position.z);
-        (int, int) endTileLoc = ((int)newTransform.position.x, (int)newTransform.position.z);
+        (int, int) startTileLoc = (Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.z));
+        (int, int) endTileLoc = (Mathf.RoundToInt(newTransform.position.x), Mathf.RoundToInt(newTransform.position.z));
         List<GameObject> tilePath = TileGridManager.Instance.FindRoute(startTileLoc, endTileLoc);
         
         // Draw line for debug path
@@ -114,6 +127,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (tilePath != null && tilePath.Count > 0)
         {
             RemainingSpeed -= tilePath.Count;
+            UiManager.Instance.UpdatePlayerPanel(this);
             foreach (GameObject tile in tilePath)
             {
                 Vector3 targetPosition = tile.transform.position;
@@ -137,6 +151,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                     transform.position = Vector3.MoveTowards(transform.position, targetPosition, walkSpeed * Time.deltaTime);
                     yield return null;
                 }
+                transform.position = targetPosition;
             }
         }
         animator.SetBool("IsMoving", false);
