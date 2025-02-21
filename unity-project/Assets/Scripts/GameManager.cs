@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
             foreach (Player player in InitialPlayerList)
             {
                 player.transform.position = new Vector3(0, 1000, 0);
+                // This doesn't actually destroy the mesh?
                 DestroyImmediate(player);
             }
             InitialPlayerList = new List<Player>();

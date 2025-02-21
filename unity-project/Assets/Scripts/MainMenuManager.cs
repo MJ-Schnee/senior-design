@@ -29,6 +29,7 @@ public class MainMenuManager : MonoBehaviour
     public void LoadCharacterP1()
     {
         CharacterList[0] = PlayerOneSelection.value + 1;
+        Debug.Log(CharacterList);
     }
     public void LoadCharacterP2()
     {
