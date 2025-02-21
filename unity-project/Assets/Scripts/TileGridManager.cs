@@ -314,7 +314,7 @@ public class TileGridManager : MonoBehaviour
         }
 
         // Percent chance to spawn an enemy
-        bool spawnEnemy = Random.Range(0, 100) > 75;
+        bool spawnEnemy = Random.Range(0, 100) <= 75;
 
         CreateRoom(roomTopRightX, roomTopRightZ, spawnEnemy, doorSides);
     }

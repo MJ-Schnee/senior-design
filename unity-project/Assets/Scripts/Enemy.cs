@@ -85,6 +85,7 @@ public class Enemy : Player
         {
             currentTile.IsWalkable = true;
             TurnIdentifierRenderer.material = ActiveTurnMaterial;
+            RemainingSpeed = PlayerSpeed;
             StartCoroutine(EnemyTurnAI());
         }
         else
