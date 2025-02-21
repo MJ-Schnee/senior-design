@@ -30,7 +30,9 @@ public class Enemy : Player
     // Returns tile transform closest to the nearest alive player within the enemy's movement speed
     public Transform FindMovementDestination(Tile playerTile)
     {
-        List<GameObject> route = TileGridManager.Instance.FindRoute(GetCurrentTile().gameObject, playerTile.gameObject);
+        Vector2Int currentTilePosition = TileHelper.PositionToCoordinate(GetCurrentTile().transform.position);
+        Vector2Int playerTilePosition = TileHelper.PositionToCoordinate(playerTile.transform.position);
+        List<Tile> route = TileGridManager.Instance.AStarSearch(currentTilePosition, playerTilePosition);
         
         int dist = Mathf.Clamp(route.Count - 1, 0, PlayerSpeed);
         if (route.Count == 0)
@@ -38,7 +40,7 @@ public class Enemy : Player
             return transform;
         }
         
-        GameObject endTile = route[dist];
+        Tile endTile = route[dist];
         return endTile.transform;
     }
 
@@ -68,10 +70,13 @@ public class Enemy : Player
                 }
             }
         }
-        this.endT();
         GameManager.Instance.CallEndTurn();
     }
 
+    /// <summary>
+    /// Triggered every time a turn ends
+    /// </summary>
+    /// <param name="nextPlayer"></param>
     void OnEndTurn(Player nextPlayer)
     {
         Tile currentTile = GetCurrentTile();
@@ -80,6 +85,7 @@ public class Enemy : Player
         {
             currentTile.IsWalkable = true;
             TurnIdentifierRenderer.material = ActiveTurnMaterial;
+            RemainingSpeed = PlayerSpeed;
             StartCoroutine(EnemyTurnAI());
         }
         else
