@@ -8,9 +8,11 @@ public class TileGridManager : MonoBehaviour
     [SerializeField]
     private GameObject tilePrefab;
 
-    public int RoomLength { get; private set; } = 20;
+    [SerializeField]
+    private int roomLength = 20;
     
-    public int RoomWidth { get; private set; } = 20;
+    [SerializeField]
+    private int roomWidth = 20;
     
     // Bi-Directional searching for tile by object or coordinate
     public Dictionary<Tile, Vector2Int> TileToCoordinate = new();
@@ -208,8 +210,8 @@ public class TileGridManager : MonoBehaviour
         if (doesSpawnEnemy)
         {
             // TODO: Make random tile enemy spawn tile, not just center
-            GetTileAtLocation(roomTopRightX - RoomWidth / 2, roomTopRightZ - RoomLength / 2).toggleEnemy(true);
-            GameManager.Instance.GenerateRandomEnemy(roomTopRightX - RoomWidth / 2, roomTopRightZ - RoomLength / 2);
+            GetTileAtLocation(roomTopRightX - roomWidth / 2, roomTopRightZ - roomLength / 2).toggleEnemy(true);
+            GameManager.Instance.GenerateRandomEnemy(roomTopRightX - roomWidth / 2, roomTopRightZ - roomLength / 2);
         }
         else
         {
@@ -233,7 +235,7 @@ public class TileGridManager : MonoBehaviour
 
         if (side == Vector2Int.up) // North wall (up wall)
         {
-            int centerX = roomTopRightX - RoomWidth / 2;
+            int centerX = roomTopRightX - roomWidth / 2;
             int startX = centerX - halfDoor;
             int endX = centerX + halfDoor;
             for (int x = startX; x <= endX; x++)
@@ -245,10 +247,10 @@ public class TileGridManager : MonoBehaviour
         }
         else if (side == Vector2Int.down) // South wall (down wall)
         {
-            int centerX = roomTopRightX - RoomWidth / 2;
+            int centerX = roomTopRightX - roomWidth / 2;
             int startX = centerX - halfDoor;
             int endX = centerX + halfDoor;
-            int doorZ = roomTopRightZ - RoomLength;
+            int doorZ = roomTopRightZ - roomLength;
             for (int x = startX; x <= endX; x++)
             {
                 Tile doorTile = GetTileAtLocation(x, doorZ);
@@ -258,7 +260,7 @@ public class TileGridManager : MonoBehaviour
         }
         else if (side == Vector2Int.right) // East wall (right wall)
         {
-            int centerZ = roomTopRightZ - RoomLength / 2;
+            int centerZ = roomTopRightZ - roomLength / 2;
             int startZ = centerZ - halfDoor;
             int endZ = centerZ + halfDoor;
             for (int z = startZ; z <= endZ; z++)
@@ -270,10 +272,10 @@ public class TileGridManager : MonoBehaviour
         }
         else if (side == Vector2Int.left) // West wall (left wall)
         {
-            int centerZ = roomTopRightZ - RoomLength / 2;
+            int centerZ = roomTopRightZ - roomLength / 2;
             int startZ = centerZ - halfDoor;
             int endZ = centerZ + halfDoor;
-            int doorX = roomTopRightX - RoomWidth;
+            int doorX = roomTopRightX - roomWidth;
             for (int z = startZ; z <= endZ; z++)
             {
                 Tile doorTile = GetTileAtLocation(doorX, z);
@@ -323,18 +325,18 @@ public class TileGridManager : MonoBehaviour
     /// </summary>
     public void CreateBlankRoom(int x, int z)
     {
-        for (int i = x; i >= (x - RoomWidth); i--)
+        for (int i = x; i >= (x - roomWidth); i--)
         {
-            for (int j = z; j >= (z - RoomLength); j--)
+            for (int j = z; j >= (z - roomLength); j--)
             {
                 CreateTile(i, j);
             }
         }
         
         // Changes certain tiles into wall tiles
-        for (int i = x; i >= (x - RoomWidth); i--)
+        for (int i = x; i >= (x - roomWidth); i--)
         {
-            for (int j = z; j >= (z - RoomLength); j--)
+            for (int j = z; j >= (z - roomLength); j--)
             {
                 if(GetEdgeDirection(i,j) != Vector2Int.zero)
                 {
@@ -414,6 +416,16 @@ public class TileGridManager : MonoBehaviour
         }
 
         return tilesInRange;
+    }
+
+    public int GetRoomWidth()
+    {
+        return roomWidth;
+    }
+
+    public int GetRoomLength()
+    {
+        return roomLength;
     }
 }
 

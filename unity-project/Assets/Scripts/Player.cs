@@ -91,8 +91,8 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     /// </summary>
     private Vector2Int CalculateNewRoomCoordinates(Vector2Int currentTilePosition, Vector2Int edgeDirection)
     {
-        int roomWidth = TileGridManager.Instance.RoomWidth;
-        int roomHeight = TileGridManager.Instance.RoomLength;
+        int roomWidth = TileGridManager.Instance.GetRoomWidth();
+        int roomHeight = TileGridManager.Instance.GetRoomLength();
 
         int x = currentTilePosition.x;
         int y = currentTilePosition.y;
