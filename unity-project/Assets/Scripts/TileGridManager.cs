@@ -4,15 +4,19 @@ using UnityEngine;
 public class TileGridManager : MonoBehaviour
 {
     public static TileGridManager Instance;
-    public GameObject tilePrefab;
+
+    [SerializeField]
+    private GameObject tilePrefab;
+
+    public int RoomLength { get; private set; } = 20;
+    
+    public int RoomWidth { get; private set; } = 20;
     
     // Bi-Directional searching for tile by object or coordinate
-    public Dictionary<GameObject, (int, int)> TileGrid_tile = new();
-    public Dictionary<(int, int), GameObject> TileGrid_coord = new();
-
-    public int gridHeight, gridWidth;
+    public Dictionary<Tile, Vector2Int> TileToCoordinate = new();
+    public Dictionary<Vector2Int, Tile> CoordinateToTile = new();
     
-    private List<GameObject> highlightedTiles = new();
+    private List<Tile> highlightedTiles = new();
 
     void Awake()
     {
@@ -28,29 +32,41 @@ public class TileGridManager : MonoBehaviour
     
     void Start()
     {
-        // Instantiate tiles
-        addBaseRoom(20,20);
-        // Change certain tiles into door
-        for(int k = gridWidth; k <= (gridWidth+3); k++)
+        CreateStartingRoom();
+    }
+
+    /// <summary>
+    /// Creates the starting room
+    /// </summary>
+    void CreateStartingRoom()
+    {
+        Vector2Int[] startingDoorSides = { Vector2Int.up, Vector2Int.left, Vector2Int.right };
+        CreateRoom(20, 20, false, startingDoorSides);
+    }
+
+    /// <summary>
+    /// Instantiates a new tile at a location if one doesn't exist there already
+    /// </summary>
+    private void CreateTile(int x, int z)
+    {
+        Vector2Int newTileGridLoc = new(x, z);
+        if (!CoordinateToTile.ContainsKey(newTileGridLoc))
         {
-            Tile tileD = GetTileAtLoc(gridWidth, k-12);
-            tileD.toggleWall(false);
-            tileD.toggleDoor(true);
-        }
-        for(int l = gridHeight; l <= (gridHeight+3); l++)
-        {
-            Tile tileD = GetTileAtLoc(l-12, gridHeight);
-            tileD.toggleWall(false);
-            tileD.toggleDoor(true);
+            GameObject tileGO = Instantiate(tilePrefab, new Vector3(x, 0, z), Quaternion.identity, transform);
+            Tile tile = tileGO.GetComponent<Tile>();
+            TileToCoordinate.Add(tile, newTileGridLoc);
+            CoordinateToTile.Add(newTileGridLoc, tile);
         }
     }
 
     // Function to get a tile at specific coordinates
-    public Tile GetTileAtLoc(int x, int z)
+    public Tile GetTileAtLocation(int x, int z)
     {
-        GameObject tile = TileGrid_coord[(x, z)];
-        Tile tileComponent = tile.GetComponent<Tile>();
-        return tileComponent;
+        if (CoordinateToTile.TryGetValue(new Vector2Int(x, z), out Tile tile))
+        {
+            return tile;
+        }
+        return null;
     }
 
     /// <summary>
@@ -58,65 +74,55 @@ public class TileGridManager : MonoBehaviour
     /// </summary>
     public void HighlightReachableTiles(int x_cen, int y_cen, int range)
     {
-        List<Tile> reachableTiles = FindTilesInRange(GetTileAtLoc(x_cen, y_cen), range);
+        List<Tile> reachableTiles = FindTilesInRange(GetTileAtLocation(x_cen, y_cen), range);
         foreach (Tile reachableTile in reachableTiles)
         {
             if (reachableTile.IsWalkable)
             {
                 reachableTile.ToggleHighlight(true);
-                highlightedTiles.Add(reachableTile.gameObject);
+                highlightedTiles.Add(reachableTile);
             }
         }
     }
     
+    /// <summary>
+    /// Unhighlights all tiles that were marked as highlighted
+    /// </summary>
     public void UnhighlightAllTiles()
     {
-        foreach (GameObject tile in highlightedTiles)
+        foreach (Tile tile in highlightedTiles)
         {
-            Tile tileComponent = tile.GetComponent<Tile>();
-            tileComponent.ToggleHighlight(false);
+            tile.ToggleHighlight(false);
         }
         highlightedTiles.Clear();
     }
 
-    public List<GameObject> FindRoute(GameObject startTile, GameObject endTile)
+    /// <summary>
+    /// Preform A* search given start tile coordinates and end tile coordinates
+    /// </summary>
+    public List<Tile> AStarSearch(Vector2Int start, Vector2Int goal)
     {
-        (int, int) startCoord = TileGrid_tile[startTile];
-        (int, int) endCoord = TileGrid_tile[endTile];
-
-        List<GameObject> path = FindRoute(startCoord, endCoord);
-        return path;
-    }
-
-    public List<GameObject> FindRoute((int, int) startCoord, (int, int) endCoord)
-    {
-        List<GameObject> path = AStarSearch(startCoord, endCoord);
-        return path;
-    }
-
-    private List<GameObject> AStarSearch((int, int) start, (int, int) goal)
-    {
-        PriorityQueue<(int, int)> frontier = new();
+        PriorityQueue<Vector2Int> frontier = new();
         frontier.Enqueue(start, 0);
 
-        Dictionary<(int, int), (int, int)?> cameFrom = new();
-        Dictionary<(int, int), float> costSoFar = new();
+        Dictionary<Vector2Int, Vector2Int?> cameFrom = new();
+        Dictionary<Vector2Int, float> costSoFar = new();
 
         cameFrom[start] = null;
         costSoFar[start] = 0;
 
         while (frontier.Count > 0)
         {
-            (int, int) current = frontier.Dequeue();
+            Vector2Int current = frontier.Dequeue();
 
             if (current == goal)
             {
                 break;
             }
 
-            foreach ((int, int) next in GetNeighbors(current))
+            foreach (Vector2Int next in GetNeighborsPos(current))
             {
-                TileGrid_coord.TryGetValue(next, out GameObject tile);
+                CoordinateToTile.TryGetValue(next, out Tile tile);
                 // Only VALID tiles (or a non-valid goal tile)
                 if (!(next == goal) && (tile == null || !tile.TryGetComponent(out Tile tileComponent) || !tileComponent.IsWalkable))
                 {
@@ -127,7 +133,7 @@ public class TileGridManager : MonoBehaviour
                 if (!costSoFar.ContainsKey(next) || newCost < costSoFar[next])
                 {
                     costSoFar[next] = newCost;
-                    float heuristicCost = Mathf.Abs(next.Item1 - goal.Item1) + Mathf.Abs(next.Item2 - goal.Item2);
+                    float heuristicCost = Mathf.Abs(next.x - goal.x) + Mathf.Abs(next.y - goal.y);
                     float priority = newCost + heuristicCost;
                     frontier.Enqueue(next, priority);
                     cameFrom[next] = current;
@@ -138,15 +144,23 @@ public class TileGridManager : MonoBehaviour
         return ReconstructPath(cameFrom, start, goal);
     }
 
-    private List<(int, int)> GetNeighbors((int, int) tile)
+    /// <summary>
+    /// Given a tile position, this will return the positions of its neighbor tiles
+    /// </summary>
+    private List<Vector2Int> GetNeighborsPos(Vector2Int tilePos)
     {
-        List<(int, int)> neighbors = new();
-        (int, int)[] directions = { (1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1), (1, -1), (-1, 1) };
+        List<Vector2Int> neighbors = new();
+        Vector2Int[] directions = {
+            Vector2Int.right, Vector2Int.left,
+            Vector2Int.up, Vector2Int.down,
+            Vector2Int.one, new(-1, -1),    // Upleft, downleft
+            new(1, -1), new(-1, 1)          // Upright, downright
+        };
 
         foreach (var dir in directions)
         {
-            (int, int) neighbor = (tile.Item1 + dir.Item1, tile.Item2 + dir.Item2);
-            if (TileGrid_coord.ContainsKey(neighbor))
+            Vector2Int neighbor = new(tilePos.x + dir.x, tilePos.y + dir.y);
+            if (CoordinateToTile.ContainsKey(neighbor))
             {
                 neighbors.Add(neighbor);
             }
@@ -154,18 +168,21 @@ public class TileGridManager : MonoBehaviour
         return neighbors;
     }
 
-    private List<GameObject> ReconstructPath(Dictionary<(int, int), (int, int)?> cameFrom, (int, int) start, (int, int) goal)
+    /// <summary>
+    /// Helper method for A* to reconstruct finished path
+    /// </summary>
+    private List<Tile> ReconstructPath(Dictionary<Vector2Int, Vector2Int?> cameFrom, Vector2Int start, Vector2Int goal)
     {
-        List<GameObject> path = new();
-        (int, int)? current = goal;
+        List<Tile> path = new();
+        Vector2Int? current = goal;
 
         while (current != null && current != start)
         {
-            GameObject tileObj = TileGrid_coord[current.Value];
+            Tile tile = CoordinateToTile[current.Value];
             // Remove added tiles that aren't walkable (player goal tile)
-            if (tileObj.GetComponent<Tile>().IsWalkable)
+            if (tile.IsWalkable)
             {
-                path.Add(tileObj);
+                path.Add(tile);
             }
             current = cameFrom[current.Value];
         }
@@ -173,209 +190,177 @@ public class TileGridManager : MonoBehaviour
         return path;
     }
 
-    // Function creates a new Room, input is the coordinates of the top corner of the new room
-    public void newRoom(int x, int z)
+    /// <summary>
+    /// Creates a room given its top right corner, enemy spawn, and sides of doors
+    /// </summary>
+    public void CreateRoom(int roomTopRightX, int roomTopRightZ, bool doesSpawnEnemy = false, params Vector2Int[] doorSides)
+    {
+        // Start with blank template
+        CreateBlankRoom(roomTopRightX, roomTopRightZ);
+
+        // Create a door on each specified side
+        foreach (Vector2Int side in doorSides)
+        {
+            CreateDoor(roomTopRightX, roomTopRightZ, side);
+        }
+
+        // Spawn enemy or room event
+        if (doesSpawnEnemy)
+        {
+            // TODO: Make random tile enemy spawn tile, not just center
+            GetTileAtLocation(roomTopRightX - RoomWidth / 2, roomTopRightZ - RoomLength / 2).toggleEnemy(true);
+            GameManager.Instance.GenerateRandomEnemy(roomTopRightX - RoomWidth / 2, roomTopRightZ - RoomLength / 2);
+        }
+        else
+        {
+            // TODO: Implement room events
+        }
+    }
+
+    /// <summary>
+    /// Creates a door on a given side of a room given the top right corner's position
+    /// </summary>
+    public void CreateDoor(int roomTopRightX, int roomTopRightZ, Vector2Int side)
+    {
+        int doorSize = 4;
+        int halfDoor = doorSize / 2;
+        
+        // Using the room's dimensions:
+        // Top-right: (roomTopRightX, roomTopRightZ)
+        // Top-left: (roomTopRightX - RoomWidth, roomTopRightZ)
+        // Bottom-right: (roomTopRightX, roomTopRightZ - RoomLength)
+        // Bottom-left: (roomTopRightX - RoomWidth, roomTopRightZ - RoomLength)
+
+        if (side == Vector2Int.up) // North wall (up wall)
+        {
+            int centerX = roomTopRightX - RoomWidth / 2;
+            int startX = centerX - halfDoor;
+            int endX = centerX + halfDoor;
+            for (int x = startX; x <= endX; x++)
+            {
+                Tile doorTile = GetTileAtLocation(x, roomTopRightZ);
+                doorTile.toggleWall(false);
+                doorTile.toggleDoor(true);
+            }
+        }
+        else if (side == Vector2Int.down) // South wall (down wall)
+        {
+            int centerX = roomTopRightX - RoomWidth / 2;
+            int startX = centerX - halfDoor;
+            int endX = centerX + halfDoor;
+            int doorZ = roomTopRightZ - RoomLength;
+            for (int x = startX; x <= endX; x++)
+            {
+                Tile doorTile = GetTileAtLocation(x, doorZ);
+                doorTile.toggleWall(false);
+                doorTile.toggleDoor(true);
+            }
+        }
+        else if (side == Vector2Int.right) // East wall (right wall)
+        {
+            int centerZ = roomTopRightZ - RoomLength / 2;
+            int startZ = centerZ - halfDoor;
+            int endZ = centerZ + halfDoor;
+            for (int z = startZ; z <= endZ; z++)
+            {
+                Tile doorTile = GetTileAtLocation(roomTopRightX, z);
+                doorTile.toggleWall(false);
+                doorTile.toggleDoor(true);
+            }
+        }
+        else if (side == Vector2Int.left) // West wall (left wall)
+        {
+            int centerZ = roomTopRightZ - RoomLength / 2;
+            int startZ = centerZ - halfDoor;
+            int endZ = centerZ + halfDoor;
+            int doorX = roomTopRightX - RoomWidth;
+            for (int z = startZ; z <= endZ; z++)
+            {
+                Tile doorTile = GetTileAtLocation(doorX, z);
+                doorTile.toggleWall(false);
+                doorTile.toggleDoor(true);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Creates a random, new room. Parameters are top right corner of new room
+    /// </summary>
+    public void CreateRandomRoom(int roomTopRightX, int roomTopRightZ)
     {   
-        // Adds basic layout every room will have
-        addBaseRoom(x,z);
-        // Randomly chooses between several different room options
-        int kRoom = Random.Range(1,5);
-        switch(kRoom)
+        // Create a list of all possible door sides
+        List<Vector2Int> possibleSides = new()
         {
-            case 1:
-                twoRoom(x,z);
-                break;
-            case 2:
-                twoRoomv2(x,z);
-                break;
-            case 3:
-                twoRoomv3(x,z);
-                break;
-            case 4:
-                twoRoomv4(x,z);
-                break;
-            default:
-                break;
+            Vector2Int.up,
+            Vector2Int.down,
+            Vector2Int.left,
+            Vector2Int.right
+        };
+
+        // Range allows for no doors or all sides as doors
+        int doorCount = Random.Range(0, 5);
+
+        // Pick door sides at random from the list
+        Vector2Int[] doorSides = new Vector2Int[doorCount];
+        for (int i = 0; i < doorCount; i++)
+        {
+            int randomIndex = Random.Range(0, possibleSides.Count);
+            doorSides[i] = possibleSides[randomIndex];
+
+            // Ensure we don't pick the same side twice
+            possibleSides.RemoveAt(randomIndex);
         }
+
+        // Percent chance to spawn an enemy
+        bool spawnEnemy = Random.Range(0, 100) > 75;
+
+        CreateRoom(roomTopRightX, roomTopRightZ, spawnEnemy, doorSides);
     }
 
-    // Creates an enemy in the center of the room
-    public void spawnEnemy(int x, int z)
+    /// <summary>
+    /// Makes a room of roomLength x roomHeight tiles with edges set to wall tiles.
+    /// Input is top right corner of room.
+    /// </summary>
+    public void CreateBlankRoom(int x, int z)
     {
-        GetTileAtLoc((x - gridWidth/2),(z - gridHeight/2)).toggleEnemy(true);
-        GameManager.Instance.GenerateRandomEnemy(x - gridWidth/2,z - gridHeight/2);
-    }
-
-    // List of rooms being created
-    // the first part of the name of the function is the number of doors each room has
-
-    public void zeroRoom(int x, int z)
-    {
-        for (int i = x; i > (x-gridWidth); i--)
+        for (int i = x; i >= (x - RoomWidth); i--)
         {
-            for (int j = z; j > (z-gridHeight); j--)
+            for (int j = z; j >= (z - RoomLength); j--)
             {
-                GameObject tile = Instantiate(tilePrefab, new Vector3(i, 0, j), Quaternion.identity, transform);
-                TileGrid_tile.Add(tile, (i, j));
-                TileGrid_coord.Add((i, j), tile);
+                CreateTile(i, j);
             }
         }
+        
         // Changes certain tiles into wall tiles
-        for (int i = x; i > (x-gridWidth); i--)
+        for (int i = x; i >= (x - RoomWidth); i--)
         {
-            for (int j = z; j > (z-gridHeight); j--)
+            for (int j = z; j >= (z - RoomLength); j--)
             {
-                if(checkEdge(i,j) != 0)
+                if(GetEdgeDirection(i,j) != Vector2Int.zero)
                 {
-                    GetTileAtLoc(i,j).toggleWall(true);
-                }
-            }
-        }
-    }
-    public void oneRoom(int x, int z)
-    {
-        for (int i = (x-(gridWidth/2) + 2); i > (x-gridWidth/2 -2); i--)
-        {
-            GetTileAtLoc(i,z).toggleWall(false);
-            GetTileAtLoc(i,z).toggleDoor(true);
-        }
-    }
-    public void oneRoomv2(int x, int z)
-    {
-        for (int i = (z-(gridHeight/2) + 2); i > (z-gridHeight/2 - 2); i--)
-        {
-            GetTileAtLoc(x,i).toggleWall(false);
-            GetTileAtLoc(x,i).toggleDoor(true);
-        }
-    }
-    public void twoRoom(int x, int z)
-    {
-
-        for (int i = (z-(gridHeight/2) + 2); i > (z-gridHeight/2 - 2); i--)
-        {
-            GetTileAtLoc(x-20,i).toggleWall(false);
-            GetTileAtLoc(x-20,i).toggleDoor(true);
-        }
-        for (int i = (x-(gridWidth/2) + 2); i > (x-gridWidth/2 -2); i--)
-        {
-            GetTileAtLoc(i,z-20).toggleWall(false);
-            GetTileAtLoc(i,z-20).toggleDoor(true);
-        }
-        spawnEnemy(x,z);
-    }
-    public void twoRoomv2(int x, int z)
-    {
-
-        for (int i = (z-(gridHeight/2) + 2); i > (z-gridHeight/2 - 2); i--)
-        {
-            GetTileAtLoc(x,i).toggleWall(false);
-            GetTileAtLoc(x,i).toggleDoor(true);
-        }
-        for (int i = (x-(gridWidth/2) + 2); i > (x-gridWidth/2 -2); i--)
-        {
-            GetTileAtLoc(i,z).toggleWall(false);
-            GetTileAtLoc(i,z).toggleDoor(true);
-        }
-        spawnEnemy(x,z);
-    }
-    public void twoRoomv3(int x, int z)
-    {
-
-        for (int i = (z-(gridHeight/2) + 2); i > (z-gridHeight/2 - 2); i--)
-        {
-            GetTileAtLoc(x-20,i).toggleWall(false);
-            GetTileAtLoc(x-20,i).toggleDoor(true);
-        }
-        for (int i = (x-(gridWidth/2) + 2); i > (x-gridWidth/2 -2); i--)
-        {
-            GetTileAtLoc(i,z).toggleWall(false);
-            GetTileAtLoc(i,z).toggleDoor(true);
-        }
-        spawnEnemy(x,z);
-    }
-    public void twoRoomv4(int x, int z)
-    {
-
-        for (int i = (z-(gridHeight/2) + 2); i > (z-gridHeight/2 - 2); i--)
-        {
-            GetTileAtLoc(x,i).toggleWall(false);
-            GetTileAtLoc(x,i).toggleDoor(true);
-        }
-        for (int i = (x-(gridWidth/2) + 2); i > (x-gridWidth/2 -2); i--)
-        {
-            GetTileAtLoc(i,z-gridHeight).toggleWall(false);
-            GetTileAtLoc(i,z-gridHeight).toggleDoor(true);
-        }
-        spawnEnemy(x,z);
-    }
-
-    // makes the gridWidth x gridHeight number of tiles and changes any edge tiles to wall tiles
-    public void addBaseRoom(int x, int z)
-    {
-        for (int i = x; i >= (x-gridWidth); i--)
-        {
-            for (int j = z; j >= (z-gridHeight); j--)
-            {
-                if (!checkExists(i,j))
-                {
-                    GameObject tile = Instantiate(tilePrefab, new Vector3(i, 0, j), Quaternion.identity, transform);
-                    TileGrid_tile.Add(tile, (i, j));
-                    TileGrid_coord.Add((i, j), tile);
-                }
-            }
-        }
-        // Changes certain tiles into wall tiles
-        for (int i = x; i >= (x-gridWidth); i--)
-        {
-            for (int j = z; j >= (z-gridHeight); j--)
-            {
-                if(checkEdge(i,j) != 0)
-                {
-                    GetTileAtLoc(i,j).toggleWall(true);
+                    GetTileAtLocation(i,j).toggleWall(true);
                 }
             }
         }
     }
 
-    // checks if a tile already exists at set coordinates
-    public bool checkExists(int x, int z)
+    /// <summary>
+    /// Given tile coordinate, returns direction of edge or zero if not edge
+    /// </summary>
+    public Vector2Int GetEdgeDirection(int x, int z)
     {
-        (int, int) tile = (x,z);
-        return TileGrid_coord.ContainsKey(tile);
-    }
-
-    // Function that checks if this is an edge tile, input is coordinates of the tile
-    // Output is number dependent on which direction this is an edge tile for.
-    public int checkEdge(int x, int z)
-    {
-        (int, int) tile = (x,z);
-        var XE = (0,1);
-        var ZE = (1,0);
-        (int, int) neighbor = (tile.Item1 + XE.Item1, tile.Item2 + XE.Item2);
-        if (!(TileGrid_coord.ContainsKey(neighbor)))
+        Vector2Int tile = new(x, z);
+        Vector2Int[] cardinals = { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
+        foreach (Vector2Int cardinal in cardinals)
         {
-            return 2;
-        }
-        (int, int) neighbor2 = (tile.Item1 + ZE.Item1, tile.Item2 + ZE.Item2);
-        if (!(TileGrid_coord.ContainsKey(neighbor2)))
-        {
-            return 1;
+            Vector2Int neighbor = tile + cardinal;
+            if (!CoordinateToTile.ContainsKey(neighbor))
+            {
+                return cardinal;
+            }
         }
 
-        // For the negative directions
-        XE = (0,-1);
-        ZE = (-1,0);
-        (int, int) neighbor3 = (tile.Item1 + XE.Item1, tile.Item2 + XE.Item2);
-        if (!(TileGrid_coord.ContainsKey(neighbor3)))
-        {
-            return 4;
-        }
-        (int, int) neighbor4 = (tile.Item1 + ZE.Item1, tile.Item2 + ZE.Item2);
-        if (!(TileGrid_coord.ContainsKey(neighbor4)))
-        {
-            return 3;
-        }
-        return 0;
+        return Vector2Int.zero;
     }
 
     /// <summary>
@@ -390,13 +375,10 @@ public class TileGridManager : MonoBehaviour
             return tilesInRange;
         }
 
-        (int, int) startPos = (
-            Mathf.RoundToInt(centerTile.gameObject.transform.position.x),
-            Mathf.RoundToInt(centerTile.gameObject.transform.position.z)
-        );
+        Vector2Int startPos = TileToCoordinate[centerTile];
 
-        Queue<(int, int)> frontier = new();
-        Dictionary<(int, int), int> distance = new();
+        Queue<Vector2Int> frontier = new();
+        Dictionary<Vector2Int, int> distance = new();
         frontier.Enqueue(startPos);
         distance[startPos] = 0;
 
@@ -404,10 +386,10 @@ public class TileGridManager : MonoBehaviour
         while (frontier.Count > 0)
         {
             // Dequeue a tile
-            (int, int) currentPos = frontier.Dequeue();
+            Vector2Int currentPos = frontier.Dequeue();
             int currentDist = distance[currentPos];
 
-            Tile currTile = GetTileAtLoc(currentPos.Item1, currentPos.Item2);
+            Tile currTile = GetTileAtLocation(currentPos.x, currentPos.y);
             tilesInRange.Add(currTile);
 
             // Don't enqueue neighbors beyond range
@@ -417,7 +399,7 @@ public class TileGridManager : MonoBehaviour
             }
 
             // Check neighbors
-            foreach (var neighborPos in GetNeighbors(currentPos))
+            foreach (var neighborPos in GetNeighborsPos(currentPos))
             {
                 // Already visited?
                 if (distance.ContainsKey(neighborPos))
@@ -432,5 +414,16 @@ public class TileGridManager : MonoBehaviour
         }
 
         return tilesInRange;
+    }
+}
+
+/// <summary>
+/// Helper class for transforming positions to tile grid coordinates
+/// </summary>
+public static class TileHelper
+{
+    public static Vector2Int PositionToCoordinate(Vector3 position)
+    {
+        return new Vector2Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.z));
     }
 }
