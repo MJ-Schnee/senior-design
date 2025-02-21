@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 
     public List<Player> InitialPlayerList;
 
+    public List<Player> CharacterIDToPrefabList;
     public Enemy enemyFab;
 
     public CircularLinkedList<Player> TurnOrder;
@@ -21,17 +22,34 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(this);
 
+        if (MainMenuManager.Instance != null) {
+            foreach (Player player in InitialPlayerList)
+            {
+                player.transform.position = new Vector3(0, 1000, 0);
+                DestroyImmediate(player);
+            }
+            InitialPlayerList = new List<Player>();
+            for (int i = 0; i < 4; i++)
+            {
+                int cid = MainMenuManager.Instance.CharacterList[i];
+                if (cid > 0) {
+                    Player p = Instantiate(CharacterIDToPrefabList[cid - 1], new Vector3(((i >> 1) << 1)+9,0,((i << 31) >> 30)+9), Quaternion.identity, transform);
+                    p.name = $"Player {i+1}";
+                    InitialPlayerList.Add(p);
+                }
+            }
+        }
         TurnOrder = new();
     }
 
     void Start()
     {
+        
         // Wait for UI to Awake
         foreach (Player player in InitialPlayerList)
         {
             AddTurn(player);
         }
-
         StartCoroutine(StartFirstTurn());
     }
 

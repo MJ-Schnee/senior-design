@@ -529,6 +529,11 @@ MonoBehaviour:
   InitialPlayerList:
   - {fileID: 962039922489728494}
   - {fileID: 1374601513}
+  CharacterIDToPrefabList:
+  - {fileID: 5789236828834995734, guid: 031b791fef308ed458b1b1eb3d1e6a5c, type: 3}
+  - {fileID: 5789236828834995734, guid: d18d1dfebaebcdd47bf3fb4ef4115d98, type: 3}
+  - {fileID: 5789236828834995734, guid: 1a43496f000eef447aa3a9ad57fdff71, type: 3}
+  - {fileID: 5789236828834995734, guid: f402d4788a2726a4e847ad63731cd446, type: 3}
   enemyFab: {fileID: 5604584777461859994, guid: d02fb146ac3449149bee9c408754fc61, type: 3}
 --- !u!4 &289611107
 Transform:
