@@ -105,15 +105,15 @@ public class Enemy : Player
     }
 
     /// <summary>
-    /// Kills this enemy.
-    /// For now, just disables game object, removes from turn order, and increases kill count.
+    /// Function called after death animation finishes.
+    /// Destroys game object, removes from turn order, and increases kill count.
     /// </summary>
-    protected override void KillPlayer()
+    protected override void OnDeath()
     {
-        // TODO: Add death animation
-        Debug.Log($"{name} died and its kill is counted!");
+        Debug.Log($"{name} has been removed and its kill counted!");
         GameManager.Instance.KillCount++;
-        gameObject.SetActive(false);
         GameManager.Instance.RemoveTurn(this);
+        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 }

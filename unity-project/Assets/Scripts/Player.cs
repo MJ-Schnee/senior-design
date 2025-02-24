@@ -250,13 +250,19 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
     /// <summary>
     /// Kills this player.
-    /// For now, just disables game object and removes from turn order.
+    /// For now, just triggers death animation.
     /// </summary>
     protected virtual void KillPlayer()
     {
-        // TODO: Add death animation
         Debug.Log($"{name} died");
-        gameObject.SetActive(false);
-        GameManager.Instance.RemoveTurn(this);
+        Animator.SetTrigger("Killed");
+    }
+
+    /// <summary>
+    /// Function called after death animation finishes.
+    /// </summary>
+    protected virtual void OnDeath()
+    {
+        // For now this does nothing for Players and is just for enemy use.
     }
 }
