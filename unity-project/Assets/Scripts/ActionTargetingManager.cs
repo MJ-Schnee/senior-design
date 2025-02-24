@@ -43,7 +43,7 @@ public class ActionTargetingManager : MonoBehaviour
         Player[] allPlayers = FindObjectsOfType<Player>();
         foreach (Player player in allPlayers)
         {
-            if (player == actingPlayer)
+            if (player == actingPlayer || player.PlayerHp_curr <= 0)
             {
                 continue;
             }
