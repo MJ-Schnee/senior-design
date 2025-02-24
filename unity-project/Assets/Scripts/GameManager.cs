@@ -24,6 +24,10 @@ public class GameManager : MonoBehaviour
         set { killCount = value; }
     }
 
+    [SerializeField]
+    private int teamRevives = 2;
+    public int TeamRevives { get => teamRevives; set => teamRevives = value; }
+
     public void Awake()
     {
         Instance = this;

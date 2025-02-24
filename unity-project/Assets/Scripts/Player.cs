@@ -27,6 +27,8 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     
     public Player currentActionTarget;
 
+    private bool isDead = false;
+
     void Awake()
     {
         GameManager.OnEndTurn += OnEndTurn;
@@ -40,6 +42,18 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     {
         if (nextPlayer == this)
         {
+            if (isDead)
+            {
+                if (GameManager.Instance.TeamRevives > 0)
+                {
+                    RevivePlayer();
+                }
+                else
+                {
+                    // TODO: Implement game over
+                }
+            }
+
             isMyTurn = true;
             TurnIdentifierRenderer.material = ActiveTurnMaterial;
             RemainingSpeed = PlayerSpeed;
@@ -263,6 +277,29 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     /// </summary>
     protected virtual void OnDeath()
     {
-        // For now this does nothing for Players and is just for enemy use.
+        isDead = true;
+    }
+
+    /// <summary>
+    /// Uses a team revive to bring a player back from the dead and restore the player back to half-health.
+    /// </summary>
+    protected void RevivePlayer()
+    {
+        if (!isDead)
+        {
+            return;
+        }
+
+        Animator.SetTrigger("Revived");
+        isDead = false;
+        GameManager.Instance.TeamRevives--;
+        UiManager.Instance.UpdateReviveIcons();
+        PlayerHp_curr = PlayerHp_max / 2;
+
+        // No need to update player panel if current player isn't one being revived
+        if (this == GameManager.Instance.TurnOrder.GetCurrentTurn())
+        {
+            UiManager.Instance.UpdatePlayerPanel(this);
+        }
     }
 }

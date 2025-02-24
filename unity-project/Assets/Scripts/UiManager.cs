@@ -95,6 +95,17 @@ public class UiManager : MonoBehaviour
     GameObject ActionButton4;
     #endregion
 
+    #region Revive Icon
+    [Header("Revive Icon")]
+    [SerializeField]
+    private Transform reviveIconContainer;
+
+    [SerializeField]
+    private GameObject reviveIconPrefab;
+
+    private List<GameObject> reviveIconList = new();
+    #endregion
+
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -117,6 +128,7 @@ public class UiManager : MonoBehaviour
         
         UpdatePlayerPanel(GameManager.Instance.TurnOrder.GetCurrentTurn());
         UpdateUpNextPanel();
+        UpdateReviveIcons();
 
         Button playerImageButton = playerImage.GetComponent<Button>();
         playerImageButton.onClick.AddListener(() => CameraController.Instance.CenterObject(currentPlayer.gameObject));
@@ -308,6 +320,33 @@ public class UiManager : MonoBehaviour
         {
             hitMissText.Target = trackingTransform;
             hitMissText.SetText(text, color);
+        }
+    }
+
+    /// <summary>
+    /// Adds or removes revive icons to equal the number of revives left for the team
+    /// </summary>
+    public void UpdateReviveIcons()
+    {
+        // Destroy extra icons
+        if (reviveIconList.Count > GameManager.Instance.TeamRevives)
+        {
+            for (int i = reviveIconList.Count; i > GameManager.Instance.TeamRevives; i--)
+            {
+                GameObject reviveIcon = reviveIconList[i - 1];
+                reviveIconList.Remove(reviveIcon);
+                Destroy(reviveIcon);
+            }
+        }
+        
+        // Add extra icons
+        else if (reviveIconList.Count < GameManager.Instance.TeamRevives)
+        {
+            for (int i = reviveIconList.Count; i < GameManager.Instance.TeamRevives; i++)
+            {
+                GameObject reviveIcon = Instantiate(reviveIconPrefab, reviveIconContainer);
+                reviveIconList.Add(reviveIcon);   
+            }
         }
     }
 }

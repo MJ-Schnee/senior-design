@@ -115,5 +115,6 @@ public class Enemy : Player
         GameManager.Instance.RemoveTurn(this);
         gameObject.SetActive(false);
         Destroy(gameObject);
+        GameManager.OnEndTurn -= OnEndTurn;
     }
 }
