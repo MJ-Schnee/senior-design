@@ -28,6 +28,9 @@ public class GameManager : MonoBehaviour
     private int teamRevives = 2;
     public int TeamRevives { get => teamRevives; set => teamRevives = value; }
 
+    [SerializeField]
+    private GameObject gameOverScreen;
+
     public void Awake()
     {
         Instance = this;
@@ -56,7 +59,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        
+
         // Wait for UI to Awake
         foreach (Player player in InitialPlayerList)
         {
@@ -109,6 +112,21 @@ public class GameManager : MonoBehaviour
         Enemy e = Instantiate(enemyFab, new Vector3(x,0,y), Quaternion.identity, transform);
         AddTurn(e, afterCurrentPlayer: true);
         return e;
+    }
+
+    public void GameOver()
+    {
+        gameOverScreen.SetActive(true);
+    }
+
+    public void RestartGame()
+    {
+        // TODO: Implement
+    }
+    
+    public void ExitToDesktop()
+    {
+        Application.Quit();
     }
 }
 

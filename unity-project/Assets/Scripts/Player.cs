@@ -50,7 +50,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
                 }
                 else
                 {
-                    // TODO: Implement game over
+                    GameManager.Instance.GameOver();
                 }
             }
 
