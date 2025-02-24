@@ -37,22 +37,22 @@ public class ActionTargetingManager : MonoBehaviour
         currentAction = action;
         this.actingPlayer = actingPlayer;
 
+        List<Tile> tilesInRange = TileGridManager.Instance.FindTilesInRange(actingPlayer.GetCurrentTile(), action.ActionRange);
+
         // Find all players in range
         Player[] allPlayers = FindObjectsOfType<Player>();
-        Vector3 actingPos = actingPlayer.transform.position;
-        foreach (var p in allPlayers)
+        foreach (Player player in allPlayers)
         {
-            if (p == actingPlayer)
+            if (player == actingPlayer)
             {
                 continue;
             }
 
-            int dx = Mathf.Abs(Mathf.RoundToInt(p.transform.position.x - actingPos.x));
-            int dz = Mathf.Abs(Mathf.RoundToInt(p.transform.position.z - actingPos.z));
-            if (dx + dz <= action.ActionRange)
+            Tile playerTile = player.GetCurrentTile();
+            if (tilesInRange.Contains(playerTile))
             {
-                selectablePlayers.Add(p);
-                p.TurnIdentifierRenderer.material = p.SelectableTurnIdMaterial;
+                selectablePlayers.Add(player);
+                player.TurnIdentifierRenderer.material = player.SelectableTurnIdMaterial;
             }
         }
     }
