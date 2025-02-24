@@ -52,7 +52,7 @@ public class HitMissText : MonoBehaviour
         transform.localScale = Vector3.one * scaleFactor;
 
         // Fade over time
-        textUi.alpha -= Time.deltaTime / Lifetime * 0.025f;
+        textUi.alpha -= Time.deltaTime / Lifetime;
     }
 
     public void SetText(string message, Color color)
@@ -61,7 +61,6 @@ public class HitMissText : MonoBehaviour
         {
             textUi.text = message;
             textUi.color = color;
-            textUi.alpha = 0.02f;
         }
     }
 }
