@@ -17,6 +17,13 @@ public class GameManager : MonoBehaviour
 
     public static event Action<Player> OnEndTurn;
 
+    private int killCount = 0;
+    public int KillCount
+    {
+        get { return killCount; }
+        set { killCount = value; }
+    }
+
     public void Awake()
     {
         Instance = this;

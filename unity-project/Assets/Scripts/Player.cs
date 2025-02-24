@@ -234,10 +234,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
         if (PlayerHp_curr <= 0)
         {
-            // TODO: Add death animation with revive
-            Debug.Log($"{name} died");
-            gameObject.SetActive(false);
-            GameManager.Instance.RemoveTurn(this);
+            KillPlayer();
         }
     }
 
@@ -249,5 +246,17 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         Debug.Log($"{name}'s OnActionImpact event triggered.");
 
         currentAction.ApplyImpact(currentActionTarget);
+    }
+
+    /// <summary>
+    /// Kills this player.
+    /// For now, just disables game object and removes from turn order.
+    /// </summary>
+    protected virtual void KillPlayer()
+    {
+        // TODO: Add death animation
+        Debug.Log($"{name} died");
+        gameObject.SetActive(false);
+        GameManager.Instance.RemoveTurn(this);
     }
 }

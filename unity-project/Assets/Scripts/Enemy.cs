@@ -103,4 +103,17 @@ public class Enemy : Player
         // TODO: Individualize icons by enemy type
         IconColor = Color.red;
     }
+
+    /// <summary>
+    /// Kills this enemy.
+    /// For now, just disables game object, removes from turn order, and increases kill count.
+    /// </summary>
+    protected override void KillPlayer()
+    {
+        // TODO: Add death animation
+        Debug.Log($"{name} died and its kill is counted!");
+        GameManager.Instance.KillCount++;
+        gameObject.SetActive(false);
+        GameManager.Instance.RemoveTurn(this);
+    }
 }
