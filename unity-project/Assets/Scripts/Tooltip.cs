@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 
 public class Tooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
+    [TextArea]
     public string Message;
 
     private float tooltipTimerSec = 2.0f;

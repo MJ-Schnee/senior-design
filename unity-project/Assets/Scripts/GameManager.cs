@@ -10,28 +10,61 @@ public class GameManager : MonoBehaviour
 
     public List<Player> InitialPlayerList;
 
+    public List<Player> CharacterIDToPrefabList;
     public Enemy enemyFab;
 
     public CircularLinkedList<Player> TurnOrder;
 
     public static event Action<Player> OnEndTurn;
 
+    private int killCount = 0;
+    public int KillCount
+    {
+        get { return killCount; }
+        set { killCount = value; }
+    }
+
+    [SerializeField]
+    private int teamRevives = 2;
+    public int TeamRevives { get => teamRevives; set => teamRevives = value; }
+
+    [SerializeField]
+    private GameObject gameOverScreen;
+
     public void Awake()
     {
         Instance = this;
         DontDestroyOnLoad(this);
 
+        if (MainMenuManager.Instance != null) {
+            foreach (Player player in InitialPlayerList)
+            {
+                player.transform.position = new Vector3(0, 1000, 0);
+                // This doesn't actually destroy the mesh?
+                DestroyImmediate(player);
+            }
+            InitialPlayerList = new List<Player>();
+            for (int i = 0; i < 4; i++)
+            {
+                int cid = MainMenuManager.Instance.CharacterList[i];
+                if (cid > 0) {
+                    Player p = Instantiate(CharacterIDToPrefabList[cid - 1], new Vector3(((i >> 1) << 1)+9,0,((i << 31) >> 30)+9), Quaternion.identity, transform);
+                    p.name = $"Player {i+1}";
+                    InitialPlayerList.Add(p);
+                }
+            }
+        }
         TurnOrder = new();
     }
 
     void Start()
     {
+
         // Wait for UI to Awake
         foreach (Player player in InitialPlayerList)
         {
             AddTurn(player);
         }
-
         StartCoroutine(StartFirstTurn());
     }
 
@@ -79,6 +112,21 @@ public class GameManager : MonoBehaviour
         Enemy e = Instantiate(enemyFab, new Vector3(x,0,y), Quaternion.identity, transform);
         AddTurn(e, afterCurrentPlayer: true);
         return e;
+    }
+
+    public void GameOver()
+    {
+        gameOverScreen.SetActive(true);
+    }
+
+    public void RestartGame()
+    {
+        // TODO: Implement
+    }
+    
+    public void ExitToDesktop()
+    {
+        Application.Quit();
     }
 }
 

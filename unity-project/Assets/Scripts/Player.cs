@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public Color IconColor;
 
@@ -11,12 +11,23 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public Renderer TurnIdentifierRenderer;
 
-    public Material ActiveTurnMaterial, InactiveTurnMaterial;
+    public Material
+        ActiveTurnMaterial,
+        InactiveTurnMaterial,
+        SelectedTurnIdMaterial,
+        SelectableTurnIdMaterial;
 
     private bool isMyTurn;
 
-    [SerializeField]
-    protected Animator animator;
+    public Animator Animator;
+
+    public BaseAction Action1, Action2, Action3, Action4;
+
+    public BaseAction currentAction;
+    
+    public Player currentActionTarget;
+
+    private bool isDead = false;
 
     void Awake()
     {
@@ -24,10 +35,25 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         PlayerHp_curr = PlayerHp_max;
     }
 
+    /// <summary>
+    /// Triggered every time a turn ends
+    /// </summary>
     void OnEndTurn(Player nextPlayer)
     {
         if (nextPlayer == this)
         {
+            if (isDead)
+            {
+                if (GameManager.Instance.TeamRevives > 0)
+                {
+                    RevivePlayer();
+                }
+                else
+                {
+                    GameManager.Instance.GameOver();
+                }
+            }
+
             isMyTurn = true;
             TurnIdentifierRenderer.material = ActiveTurnMaterial;
             RemainingSpeed = PlayerSpeed;
@@ -42,95 +68,104 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         currentTile.IsWalkable = isMyTurn;
     }
 
+    /// <summary>
+    /// Returns the tile the player is currently standing on
+    /// </summary>
     public Tile GetCurrentTile()
     {
-        int positionX = Mathf.RoundToInt(transform.position.x);
-        int positionZ = Mathf.RoundToInt(transform.position.z);
-        Tile currentTile = TileGridManager.Instance.GetTileAtLoc(positionX, positionZ);
+        Vector2Int gridLoc = TileHelper.PositionToCoordinate(transform.position);
+        Tile currentTile = TileGridManager.Instance.GetTileAtLocation(gridLoc.x, gridLoc.y);
         return currentTile;
     }
 
-    // This function checks if the tile we are on is a door tile and an edge tile,
-    // If it is then we create a new room, inputting the coordinates of the top corner of the new room.
-    // TODO make this work in the negative directions
-    public void endT()
+    /// <summary>
+    /// If on an edge door tile, trigger new room generation
+    /// </summary>
+    public void DiscoverRoom()
     {
-        // Get our current position
-        int positionX = Mathf.RoundToInt(transform.position.x);
-        int positionZ = Mathf.RoundToInt(transform.position.z);
+        Tile currentTile = GetCurrentTile();
+        if (!currentTile.getDoor())
+            return;
 
-        // Checks to make sure this is a door tile and an edge tile
-        // If its not an edge tile we know we already "opened" this door
-
-        int checkE = TileGridManager.Instance.checkEdge(positionX, positionZ);
-        Tile checkDoor = TileGridManager.Instance.GetTileAtLoc(positionX, positionZ);
-        bool checkD = checkDoor.getDoor();
-        int Z, X;
-        if(checkD)
+        // Calculate the coordinates for the new room based on the edge direction
+        Vector2Int currentTilePosition = TileHelper.PositionToCoordinate(currentTile.transform.position);
+        Vector2Int edgeDirection = TileGridManager.Instance.GetEdgeDirection(currentTilePosition.x, currentTilePosition.y);
+        if (edgeDirection == Vector2Int.zero)
         {
-            // Based on which direction the edge is, we create the new room
-            // We do this because we need to input the top right corner of the new room
-            // Which varies based on which direction our edge is.
-            switch(checkE)
-            {
-                case 1:
-                    if(positionZ > 0)
-                    {
-                        Z = 20 * (Mathf.FloorToInt (positionZ/20) + 1);
-                    }
-                    else
-                    {
-                        Z = 20 * (Mathf.FloorToInt (positionZ/20));
-                    }
-                    TileGridManager.Instance.newRoom(positionX + 20, Z);
-                    break;
-                case 2:
-                    if(positionX > 0)
-                    {
-                        X = 20 * (Mathf.FloorToInt (positionX/20) + 1);
-                    }
-                    else
-                    {
-                        X = 20 * (Mathf.FloorToInt (positionX/20));
-                    }
-                    TileGridManager.Instance.newRoom(X, positionZ + 20);
-                    break;
-                case 3:
-                    if(positionZ > 0)
-                    {
-                        Z = 20 * (Mathf.FloorToInt (positionZ/20) + 1);
-                    }
-                    else
-                    {
-                        Z = 20 * (Mathf.FloorToInt (positionZ/20));
-                    }
-                    TileGridManager.Instance.newRoom(positionX, Z);
-                    break;
-                case 4:
-                    if(positionX > 0)
-                    {
-                        X = 20 * (Mathf.FloorToInt (positionX/20) + 1);
-                    }
-                    else
-                    {
-                        X = 20 * (Mathf.FloorToInt (positionX/20));
-                    }
-                    TileGridManager.Instance.newRoom(X, positionZ);
-                    break;
-                default:
-                    break;       
-            }
+            // Non-edge door
+            return;
+        }
+
+        Vector2Int newRoomCoordinates = CalculateNewRoomCoordinates(currentTilePosition, edgeDirection);
+        TileGridManager.Instance.CreateRandomRoom(newRoomCoordinates.x, newRoomCoordinates.y);
+    }
+
+    /// <summary>
+    /// Helper function to calculate coordinates for new rooms
+    /// </summary>
+    private Vector2Int CalculateNewRoomCoordinates(Vector2Int currentTilePosition, Vector2Int edgeDirection)
+    {
+        int roomWidth = TileGridManager.Instance.GetRoomWidth();
+        int roomHeight = TileGridManager.Instance.GetRoomLength();
+
+        int x = currentTilePosition.x;
+        int y = currentTilePosition.y;
+
+        if (edgeDirection == Vector2Int.right)
+        {
+            y = CalculateRoomBoundary(y, roomHeight);
+            return new Vector2Int(x + roomWidth, y);
+        }
+
+        if (edgeDirection == Vector2Int.up)
+        {
+            x = CalculateRoomBoundary(x, roomWidth);
+            return new Vector2Int(x, y + roomHeight);
+        }
+
+        if (edgeDirection == Vector2Int.left)
+        {
+            y = CalculateRoomBoundary(y, roomHeight);
+            return new Vector2Int(x, y);
+        }
+
+        if (edgeDirection == Vector2Int.down)
+        {
+            x = CalculateRoomBoundary(x, roomWidth);
+            return new Vector2Int(x, y);
+        }
+
+        return Vector2Int.zero;
+    }
+
+    /// <summary>
+    /// Helper function to calculate boundary of new rooms
+    /// </summary>
+    private int CalculateRoomBoundary(int position, int roomSize)
+    {
+        if (position > 0)
+        {
+            return roomSize * (Mathf.FloorToInt(position / roomSize) + 1);
+        }
+        else
+        {
+            return roomSize * Mathf.FloorToInt(position / roomSize);
         }
     }
 
+    /// <summary>
+    /// Moves player through grid to new position's tile
+    /// Coroutine finishes once player arrives
+    /// </summary>
     public IEnumerator MoveTo(Transform newTransform)
     {
         float walkSpeed = 8.0f;
         float turnSpeed = 15.0f;
 
-        (int, int) startTileLoc = (Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.z));
-        (int, int) endTileLoc = (Mathf.RoundToInt(newTransform.position.x), Mathf.RoundToInt(newTransform.position.z));
-        List<GameObject> tilePath = TileGridManager.Instance.FindRoute(startTileLoc, endTileLoc);
+        Vector2Int startTileLoc = TileHelper.PositionToCoordinate(transform.position);
+        Vector2Int endTileLoc = TileHelper.PositionToCoordinate(newTransform.position);
+        
+        List<Tile> tilePath = TileGridManager.Instance.AStarSearch(startTileLoc, endTileLoc);
         
         // Draw line for debug path
         for (int i = 0; i < tilePath.Count - 1; i++)
@@ -143,12 +178,12 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
 
         // Move player along path
-        animator.SetBool("IsMoving", true);
+        Animator.SetBool("IsMoving", true);
         if (tilePath != null && tilePath.Count > 0)
         {
             RemainingSpeed -= tilePath.Count;
             UiManager.Instance.UpdatePlayerPanel(this);
-            foreach (GameObject tile in tilePath)
+            foreach (Tile tile in tilePath)
             {
                 Vector3 targetPosition = tile.transform.position;
                 targetPosition.y = transform.position.y;
@@ -174,11 +209,9 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 transform.position = targetPosition;
             }
         }
-        animator.SetBool("IsMoving", false);
-        // Calling function to check if we ended on a door and edge tile
-        // TODO make this work in the OnEndTurn function or 
-        // otherwise run when the player hits end turn button
-        this.endT();
+        Animator.SetBool("IsMoving", false);
+
+        DiscoverRoom();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -191,5 +224,82 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         UiManager.Instance.HidePlayerInspector();
         StopCoroutine(UiManager.Instance.InspectorCoroutine);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        ActionTargetingManager.Instance.HandlePlayerClicked(this);
+    }
+
+    /// <summary>
+    /// Deals damage to this player and plays the hurt animation
+    /// </summary>
+    public void DealDamage(int amount)
+    {
+        PlayerHp_curr = Mathf.Max(PlayerHp_curr - amount, 0);
+
+        // Only need to update player panel if current player is damaged
+        if (this == GameManager.Instance.TurnOrder.GetCurrentTurn())
+        {
+            UiManager.Instance.UpdatePlayerPanel(this);
+        }
+
+        Animator.SetTrigger("Hurt");
+
+        if (PlayerHp_curr <= 0)
+        {
+            KillPlayer();
+        }
+    }
+
+    /// <summary>
+    /// Generic event triggered by action animation to apply action's effects
+    /// </summary>
+    public void OnActionImpact()
+    {
+        Debug.Log($"{name}'s OnActionImpact event triggered.");
+
+        currentAction.ApplyImpact(currentActionTarget);
+    }
+
+    /// <summary>
+    /// Kills this player.
+    /// For now, just triggers death animation.
+    /// </summary>
+    protected virtual void KillPlayer()
+    {
+        Debug.Log($"{name} died");
+        Animator.SetTrigger("Killed");
+    }
+
+    /// <summary>
+    /// Function called after death animation finishes.
+    /// </summary>
+    protected virtual void OnDeath()
+    {
+        isDead = true;
+    }
+
+    /// <summary>
+    /// Uses a team revive to bring a player back from the dead and restore the player back to half-health.
+    /// </summary>
+    protected void RevivePlayer()
+    {
+        if (!isDead)
+        {
+            return;
+        }
+
+        Animator.SetTrigger("Revived");
+        isDead = false;
+        GameManager.Instance.TeamRevives--;
+        UiManager.Instance.UpdateReviveIcons();
+        PlayerHp_curr = PlayerHp_max / 2;
+
+        // No need to update player panel if current player isn't one being revived
+        if (this == GameManager.Instance.TurnOrder.GetCurrentTurn())
+        {
+            UiManager.Instance.UpdatePlayerPanel(this);
+        }
     }
 }
