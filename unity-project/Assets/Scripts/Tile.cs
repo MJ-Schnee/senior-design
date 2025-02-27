@@ -10,6 +10,8 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     private bool IsDoor;
     private bool IsWall;
     private bool IsEnemySpawn;
+    private bool IsPit;
+    private bool IsSniper;
 
     public bool IsWalkable = true;
 
@@ -19,9 +21,10 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     [SerializeField]
     private Color baseC = Color.blue;
     private Color color = Color.white;
-    private Color doorC = Color.red;
-    private Color wallC = Color.black;
+    private Color doorC = new Color(150.0f/255.0f,75.0f/255.0f,0.0f,1.0f);
+    private Color wallC = Color.gray;
     private Color enemyC = Color.green;
+    private Color pitC = Color.red;
 
     //helper list to cache all the materials of this object
     private List<Material> materials;
@@ -53,7 +56,14 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     {
         return IsEnemySpawn;
     }
-
+    public bool getPit()
+    {
+        return IsPit;
+    }
+    public bool getSniper()
+    {
+        return IsSniper;
+    }
     // Toggle funcitons, all basically turn the tile into another tile,
     // IE exampleTile.toggleDoor(true) turns exampleTile into a Door tile by changing its color
     // Since a tile can have IsDoor and IsWall true at the same time these are toggles so for example
@@ -99,6 +109,28 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             }
         }
     }
+    public void setPit(bool isPit)
+    {
+        IsPit = isPit;
+        if(isPit)
+        {
+            IsWalkable = false;
+            foreach (var material in materials)
+            {
+                //set the color
+                material.SetColor("_Color", pitC);
+            }
+        }
+        else
+        {
+            IsWalkable = true;
+        }
+    }
+    public void setSniper(bool isSniper)
+    {
+        IsSniper = isSniper;
+    }
+
 
     public void ToggleHighlight(bool isHighlighted)
     {
