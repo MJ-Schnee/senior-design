@@ -5,6 +5,8 @@ public class TileGridManager : MonoBehaviour
 {
     public static TileGridManager Instance;
 
+    private bool trap = false;
+
     [SerializeField]
     private GameObject tilePrefab;
 
@@ -43,7 +45,7 @@ public class TileGridManager : MonoBehaviour
     void CreateStartingRoom()
     {
         Vector2Int[] startingDoorSides = { Vector2Int.up, Vector2Int.left, Vector2Int.right };
-        CreateRoom(20, 20, false, startingDoorSides);
+        CreateRoom(20, 20, false, false, startingDoorSides);
     }
 
     /// <summary>
@@ -192,10 +194,20 @@ public class TileGridManager : MonoBehaviour
         return path;
     }
 
+    // For the one time damage rooms we need the player script to be able to check
+    // if they just spawned a trapped room
+
+    public bool getTrap()
+    {
+        bool temp = trap;
+        trap = false;
+        return temp;
+    }
+
     /// <summary>
     /// Creates a room given its top right corner, enemy spawn, and sides of doors
     /// </summary>
-    public void CreateRoom(int roomTopRightX, int roomTopRightZ, bool doesSpawnEnemy = false, params Vector2Int[] doorSides)
+    public void CreateRoom(int roomTopRightX, int roomTopRightZ, bool doesSpawnEnemy = false, bool doesRoomEvent = false, params Vector2Int[] doorSides)
     {
         // Start with blank template
         CreateBlankRoom(roomTopRightX, roomTopRightZ);
@@ -213,9 +225,49 @@ public class TileGridManager : MonoBehaviour
             GetTileAtLocation(roomTopRightX - roomWidth / 2, roomTopRightZ - roomLength / 2).toggleEnemy(true);
             GameManager.Instance.GenerateRandomEnemy(roomTopRightX - roomWidth / 2, roomTopRightZ - roomLength / 2);
         }
+        // Room Events! 
+        // Case 1 is a room that does damage once when the room is created
+        // Case 2 is a room that will do damage each time you start your turn there.
         else
-        {
-            // TODO: Implement room events
+        {  
+
+            if(doesRoomEvent)
+            {
+                int b = Random.Range(1,3);
+                switch (b)
+                {
+                    case 1:
+                        trap = true;
+                        for (int i = roomTopRightX - 3; i >= (roomTopRightX - roomWidth + 3); i--)
+                        {
+                            for (int j = roomTopRightZ - 3; j >= (roomTopRightZ - roomLength + 3); j--)
+                            {
+                                if(GetEdgeDirection(i,j) == Vector2Int.zero)
+                                {
+                                    Tile trapTile = GetTileAtLocation(i, j);
+                                    trapTile.setPit(true);
+                                }
+                            }
+                        }
+                        break;
+                    case 2:
+                    // Enemies of course won't be hurt by this, cause their special little guys
+                        for (int i = roomTopRightX; i >= (roomTopRightX - roomWidth); i--)
+                        {
+                            for (int j = roomTopRightZ; j >= (roomTopRightZ - roomLength); j--)
+                            {
+                                if(GetEdgeDirection(i,j) == Vector2Int.zero)
+                                {
+                                    Tile sniperTile = GetTileAtLocation(i, j);
+                                    sniperTile.setSniper(true);
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 
@@ -240,9 +292,17 @@ public class TileGridManager : MonoBehaviour
             int endX = centerX + halfDoor;
             for (int x = startX; x <= endX; x++)
             {
-                Tile doorTile = GetTileAtLocation(x, roomTopRightZ);
-                doorTile.toggleWall(false);
-                doorTile.toggleDoor(true);
+                // This if statment makes sure we don't make a door into a room that already spawned
+                // with a wall there. No Koolaid man...
+                if(GetEdgeDirection(x, roomTopRightZ) != Vector2Int.zero)
+                {
+                    Tile doorTile = GetTileAtLocation(x, roomTopRightZ);
+                    if(doorTile.getWall())
+                    {
+                        doorTile.toggleWall(false);
+                        doorTile.toggleDoor(true);
+                    }
+                }
             }
         }
         else if (side == Vector2Int.down) // South wall (down wall)
@@ -253,9 +313,15 @@ public class TileGridManager : MonoBehaviour
             int doorZ = roomTopRightZ - roomLength;
             for (int x = startX; x <= endX; x++)
             {
-                Tile doorTile = GetTileAtLocation(x, doorZ);
-                doorTile.toggleWall(false);
-                doorTile.toggleDoor(true);
+                if(GetEdgeDirection(x, doorZ) != Vector2Int.zero)
+                {
+                    Tile doorTile = GetTileAtLocation(x, doorZ);
+                    if(doorTile.getWall())
+                    {
+                        doorTile.toggleWall(false);
+                        doorTile.toggleDoor(true);
+                    }
+                }
             }
         }
         else if (side == Vector2Int.right) // East wall (right wall)
@@ -265,9 +331,16 @@ public class TileGridManager : MonoBehaviour
             int endZ = centerZ + halfDoor;
             for (int z = startZ; z <= endZ; z++)
             {
-                Tile doorTile = GetTileAtLocation(roomTopRightX, z);
-                doorTile.toggleWall(false);
-                doorTile.toggleDoor(true);
+
+                if(GetEdgeDirection(roomTopRightX, z) != Vector2Int.zero)
+                {
+                    Tile doorTile = GetTileAtLocation(roomTopRightX, z);
+                    if(doorTile.getWall())
+                    {
+                        doorTile.toggleWall(false);
+                        doorTile.toggleDoor(true);
+                    }
+                }
             }
         }
         else if (side == Vector2Int.left) // West wall (left wall)
@@ -278,9 +351,15 @@ public class TileGridManager : MonoBehaviour
             int doorX = roomTopRightX - roomWidth;
             for (int z = startZ; z <= endZ; z++)
             {
-                Tile doorTile = GetTileAtLocation(doorX, z);
-                doorTile.toggleWall(false);
-                doorTile.toggleDoor(true);
+                if(GetEdgeDirection(doorX, z) != Vector2Int.zero)
+                {
+                    Tile doorTile = GetTileAtLocation(doorX, z);
+                    if(doorTile.getWall())
+                    {
+                        doorTile.toggleWall(false);
+                        doorTile.toggleDoor(true);
+                    }
+                }
             }
         }
     }
@@ -313,10 +392,16 @@ public class TileGridManager : MonoBehaviour
             possibleSides.RemoveAt(randomIndex);
         }
 
-        // Percent chance to spawn an enemy
+        // Percent chance to spawn an enemy or room event
+        // current tuning is 75% enemy, 20% room event, 5% nothing
         bool spawnEnemy = Random.Range(0, 100) <= 75;
+        bool roomEvent = false;
+        if(!spawnEnemy)
+        {
+            roomEvent = Random.Range(0,100) <= 80;
+        }
 
-        CreateRoom(roomTopRightX, roomTopRightZ, spawnEnemy, doorSides);
+        CreateRoom(roomTopRightX, roomTopRightZ, spawnEnemy, roomEvent, doorSides);
     }
 
     /// <summary>

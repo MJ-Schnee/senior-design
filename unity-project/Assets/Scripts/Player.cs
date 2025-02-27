@@ -40,6 +40,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     /// </summary>
     void OnEndTurn(Player nextPlayer)
     {
+        Tile currentTile = GetCurrentTile();
         if (nextPlayer == this)
         {
             if (isDead)
@@ -53,7 +54,12 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
                     GameManager.Instance.GameOver();
                 }
             }
-
+            // At the start of our turn if we are in a room that is a damage
+            // while in room we do the damage
+            if (currentTile.getSniper())
+            {
+                this.DealDamage(1);
+            }
             isMyTurn = true;
             TurnIdentifierRenderer.material = ActiveTurnMaterial;
             RemainingSpeed = PlayerSpeed;
@@ -64,7 +70,6 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
             TurnIdentifierRenderer.material = InactiveTurnMaterial;
         }
 
-        Tile currentTile = GetCurrentTile();
         currentTile.IsWalkable = isMyTurn;
     }
 
@@ -98,6 +103,12 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
         Vector2Int newRoomCoordinates = CalculateNewRoomCoordinates(currentTilePosition, edgeDirection);
         TileGridManager.Instance.CreateRandomRoom(newRoomCoordinates.x, newRoomCoordinates.y);
+
+        //If the room we spawned was a trap on creation room we do damage here.
+        if(TileGridManager.Instance.getTrap())
+        {
+            this.DealDamage(5);
+        }
     }
 
     /// <summary>
