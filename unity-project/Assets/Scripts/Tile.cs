@@ -10,8 +10,9 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     private bool IsDoor;
     private bool IsWall;
     private bool IsEnemySpawn;
+    private bool IsDot;
     private bool IsPit;
-    private bool IsSniper;
+    private bool IsTrap;
 
     public bool IsWalkable = true;
 
@@ -56,13 +57,17 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     {
         return IsEnemySpawn;
     }
+    public bool getTrap()
+    {
+        return IsTrap;
+    }
+    public bool getDot()
+    {
+        return IsDot;
+    }
     public bool getPit()
     {
         return IsPit;
-    }
-    public bool getSniper()
-    {
-        return IsSniper;
     }
     // Toggle funcitons, all basically turn the tile into another tile,
     // IE exampleTile.toggleDoor(true) turns exampleTile into a Door tile by changing its color
@@ -126,9 +131,13 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             IsWalkable = true;
         }
     }
-    public void setSniper(bool isSniper)
+    public void setTrap(bool isTrap)
     {
-        IsSniper = isSniper;
+        IsTrap = isTrap;
+    }
+    public void setDot(bool isDot)
+    {
+        IsDot = isDot;
     }
 
 

@@ -238,31 +238,45 @@ public class TileGridManager : MonoBehaviour
                 {
                     case 1:
                         trap = true;
-                        for (int i = roomTopRightX - 3; i >= (roomTopRightX - roomWidth + 3); i--)
-                        {
-                            for (int j = roomTopRightZ - 3; j >= (roomTopRightZ - roomLength + 3); j--)
-                            {
-                                if(GetEdgeDirection(i,j) == Vector2Int.zero)
-                                {
-                                    Tile trapTile = GetTileAtLocation(i, j);
-                                    trapTile.setPit(true);
-                                }
-                            }
-                        }
-                        break;
-                    case 2:
-                    // Enemies of course won't be hurt by this, cause their special little guys
                         for (int i = roomTopRightX; i >= (roomTopRightX - roomWidth); i--)
                         {
                             for (int j = roomTopRightZ; j >= (roomTopRightZ - roomLength); j--)
                             {
                                 if(GetEdgeDirection(i,j) == Vector2Int.zero)
                                 {
-                                    Tile sniperTile = GetTileAtLocation(i, j);
-                                    sniperTile.setSniper(true);
+                                    Tile trapTile = GetTileAtLocation(i, j);
+                                    trapTile.setTrap(true);
                                 }
                             }
                         }
+                        break;
+                    case 2:
+                    // Enemies of course won't be hurt by this, cause their special little guys
+                        for (int i = roomTopRightX -3; i >= (roomTopRightX - roomWidth + 3); i--)
+                        {
+                            for (int j = roomTopRightZ -3; j >= (roomTopRightZ - roomLength + 3); j--)
+                            {
+                                if(GetEdgeDirection(i,j) == Vector2Int.zero)
+                                {
+                                    Tile lavaTile = GetTileAtLocation(i, j);
+                                    lavaTile.setPit(true);
+
+                                }
+                            }
+                        }
+                        for (int i = roomTopRightX; i >= (roomTopRightX - roomWidth); i--)
+                        {
+                            for (int j = roomTopRightZ; j >= (roomTopRightZ - roomLength); j--)
+                            {
+                                if(GetEdgeDirection(i,j) == Vector2Int.zero)
+                                {
+                                    Tile lavaTile = GetTileAtLocation(i, j);
+                                    lavaTile.setDot(true);
+
+                                }
+                            }
+                        }
+
                         break;
                     default:
                         break;

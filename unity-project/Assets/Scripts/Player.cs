@@ -57,7 +57,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
             }
             // At the start of our turn if we are in a room that is a damage
             // while in room we do the damage
-            if (currentTile.getSniper())
+            if (currentTile.getDot())
             {
                 this.DealDamage(1);
             }
