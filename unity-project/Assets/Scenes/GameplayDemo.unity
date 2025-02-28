@@ -3620,6 +3620,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 59814ee23448cb940989c5ee5a966534, type: 2}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
+      propertyPath: Action4
+      value: 
+      objectReference: {fileID: 11400000, guid: 677c060e3bc9c7a4fac3704ae8d9c141, type: 2}
+    - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: Animator
       value: 
       objectReference: {fileID: 1700951127}
@@ -6411,6 +6415,10 @@ PrefabInstance:
       propertyPath: Action3
       value: 
       objectReference: {fileID: 11400000, guid: 59814ee23448cb940989c5ee5a966534, type: 2}
+    - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
+      propertyPath: Action4
+      value: 
+      objectReference: {fileID: 11400000, guid: 677c060e3bc9c7a4fac3704ae8d9c141, type: 2}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: Animator
       value: 
