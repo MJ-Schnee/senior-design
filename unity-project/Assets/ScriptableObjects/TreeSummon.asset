@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6e7660db3c378e47b29cc38fb73ca5c, type: 3}
+  m_Name: TreeSummon
+  m_EditorClassIdentifier: 
+  AnimationTrigger: Standing 2H Cast Spell 01
+  ActionName: TREE
+  ActionDescription: 'Summons a tree to grow underneath an enemy,
+
+    dealing damage
+    to them and any surrounding enemies.'
+  ActionColor: {r: 0.010708411, g: 0.3333333, b: 0, a: 1}
+  NumTargets: 1
+  ActionRange: 10
+  ActionDamage: 2
+  ActionRadius: 1
+  TreePrefab: {fileID: 3758664929598728795, guid: 72b610f9d539e1548a48abc798705d07, type: 3}

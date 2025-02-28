@@ -512,6 +512,23 @@ public class TileGridManager : MonoBehaviour
     {
         return roomLength;
     }
+
+    /// <summary>
+    /// Given a tile, returns the player that is on it (if there is one).
+    /// </summary>
+    public Player GetPlayerOnTile(Tile tile)
+    {
+        Player[] allPlayers = FindObjectsOfType<Player>();
+        foreach (Player p in allPlayers)
+        {
+            if (p.GetCurrentTile() == tile)
+            {
+                return p;
+            }
+        }
+        return null;
+    }
+
 }
 
 /// <summary>
