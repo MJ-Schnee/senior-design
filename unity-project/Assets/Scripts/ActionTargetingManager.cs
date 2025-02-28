@@ -37,6 +37,13 @@ public class ActionTargetingManager : MonoBehaviour
         currentAction = action;
         this.actingPlayer = actingPlayer;
 
+        if (action.NumTargets == 0)
+        {
+            selectedPlayers.Clear();
+            FinalizeSelection();
+            return;
+        }
+
         List<Tile> tilesInRange = TileGridManager.Instance.FindTilesInRange(actingPlayer.GetCurrentTile(), action.ActionRange);
 
         // Find all players in range
@@ -101,6 +108,12 @@ public class ActionTargetingManager : MonoBehaviour
         foreach (var target in selectedPlayers)
         {
             currentAction.UseAction(actingPlayer, target);
+        }
+        
+        // Execute actions with no targets
+        if (currentAction.NumTargets == 0)
+        {
+            currentAction.UseAction(actingPlayer, null);
         }
 
         // Wrap up

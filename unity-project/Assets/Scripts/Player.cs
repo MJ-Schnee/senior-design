@@ -27,10 +27,11 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     
     public Player currentActionTarget;
 
-    private bool isDead = false;
+    public bool IsDead { get; private set; }
 
     void Awake()
     {
+        IsDead = false;
         GameManager.OnEndTurn += OnEndTurn;
         PlayerHp_curr = PlayerHp_max;
     }
@@ -43,7 +44,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         Tile currentTile = GetCurrentTile();
         if (nextPlayer == this)
         {
-            if (isDead)
+            if (IsDead)
             {
                 if (GameManager.Instance.TeamRevives > 0)
                 {
@@ -264,6 +265,20 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     }
 
     /// <summary>
+    /// Heals player health up to their maximum
+    /// </summary>
+    public void HealPlayer(int amount)
+    {
+        PlayerHp_curr = Mathf.Min(PlayerHp_curr + amount, PlayerHp_max);
+
+        // Only need to update player panel if current player is damaged
+        if (this == GameManager.Instance.TurnOrder.GetCurrentTurn())
+        {
+            UiManager.Instance.UpdatePlayerPanel(this);
+        }
+    }
+
+    /// <summary>
     /// Generic event triggered by action animation to apply action's effects
     /// </summary>
     public void OnActionImpact()
@@ -288,7 +303,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     /// </summary>
     protected virtual void OnDeath()
     {
-        isDead = true;
+        IsDead = true;
     }
 
     /// <summary>
@@ -296,13 +311,13 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     /// </summary>
     protected void RevivePlayer()
     {
-        if (!isDead)
+        if (!IsDead)
         {
             return;
         }
 
         Animator.SetTrigger("Revived");
-        isDead = false;
+        IsDead = false;
         GameManager.Instance.TeamRevives--;
         UiManager.Instance.UpdateReviveIcons();
         PlayerHp_curr = PlayerHp_max / 2;

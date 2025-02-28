@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b85b296e213dca409bdd9203a3d1a0b, type: 3}
+  m_Name: TeamHeal
+  m_EditorClassIdentifier: 
+  AnimationTrigger: Standing 1H Cast Spell 01
+  ActionName: HEAL ALL
+  ActionDescription: 'Heals every party member for 4.
+
+    Does not revive dead players.'
+  ActionColor: {r: 0.17289968, g: 0.836478, b: 0, a: 1}
+  NumTargets: 0
+  ActionRange: 0
+  ActionDamage: 0
+  HealAmount: 4

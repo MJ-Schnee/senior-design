@@ -7,6 +7,7 @@ public class BaseAction : ScriptableObject
 
     public string ActionName;
 
+    [TextArea]
     public string ActionDescription;
 
     public Color ActionColor;
@@ -40,7 +41,7 @@ public class BaseAction : ScriptableObject
     /// <summary>
     /// Triggered on action animation impact, dealing ActionDamage damage to the target player.
     /// </summary>
-    public void ApplyImpact(Player targetPlayer)
+    public virtual void ApplyImpact(Player targetPlayer)
     {
         // Roll D20 against AC for hit
         int diceResult = Random.Range(1, 21);
