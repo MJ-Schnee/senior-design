@@ -6,7 +6,7 @@ public class Enemy : Player
 {
     // Returns the closest alive player, distance to the player, and tile the player is on
     // Equidistant players are chosen at random
-    public (Player, int, Tile) FindNearestTarget()
+    protected (Player, int, Tile) FindNearestTarget()
     {
         List<Player> c = new();
         int shortestDist = int.MaxValue;
@@ -28,7 +28,7 @@ public class Enemy : Player
     }
 
     // Returns tile transform closest to the nearest alive player within the enemy's movement speed
-    public Transform FindMovementDestination(Tile playerTile)
+    protected Transform FindMovementDestination(Tile playerTile)
     {
         Vector2Int currentTilePosition = TileHelper.PositionToCoordinate(GetCurrentTile().transform.position);
         Vector2Int playerTilePosition = TileHelper.PositionToCoordinate(playerTile.transform.position);
@@ -47,7 +47,7 @@ public class Enemy : Player
     /// <summary>
     /// Simple enemy AI: attempts to move next to closest player and then attack with the first attack available.
     /// </summary>
-    private IEnumerator EnemyTurnAI()
+    protected virtual IEnumerator EnemyTurnAI()
     {
         // Move the enemy toward a player
         (Player targetPlayer, int distFromTarget, Tile targetTile) = FindNearestTarget();
@@ -59,11 +59,11 @@ public class Enemy : Player
         
         // Attack if possible
         BaseAction[] actions = {Action1, Action2, Action3, Action4};
-        List<Tile> tilesInRange = TileGridManager.Instance.FindTilesInRange(GetCurrentTile(), Action1.ActionRange);
         foreach (BaseAction action in actions)
         {
             if (action != null)
             {
+                List<Tile> tilesInRange = TileGridManager.Instance.FindTilesInRange(GetCurrentTile(), action.ActionRange);
                 if (tilesInRange.Contains(targetPlayer.GetCurrentTile()))
                 {
                     action.UseAction(this, targetPlayer);
@@ -77,7 +77,7 @@ public class Enemy : Player
     /// Triggered every time a turn ends
     /// </summary>
     /// <param name="nextPlayer"></param>
-    void OnEndTurn(Player nextPlayer)
+    protected void OnEndTurn(Player nextPlayer)
     {
         Tile currentTile = GetCurrentTile();
 
@@ -95,13 +95,11 @@ public class Enemy : Player
         }
     }
 
-    void Awake()
+    protected void Awake()
     {
         GameManager.OnEndTurn += OnEndTurn;
         Animator = GetComponentInChildren<Animator>();
         PlayerHp_curr = PlayerHp_max;
-        // TODO: Individualize icons by enemy type
-        IconColor = Color.red;
     }
 
     /// <summary>

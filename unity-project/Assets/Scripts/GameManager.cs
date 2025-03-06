@@ -11,7 +11,8 @@ public class GameManager : MonoBehaviour
     public List<Player> InitialPlayerList;
 
     public List<Player> CharacterIDToPrefabList;
-    public Enemy enemyFab;
+
+    public List<Enemy> enemyPrefabs;
 
     public CircularLinkedList<Player> TurnOrder;
 
@@ -107,11 +108,14 @@ public class GameManager : MonoBehaviour
         return removed;
     }
 
-    // TODO: Make more enemy options so it's actually random lol
+    /// <summary>
+    /// Spawns a random enemy from list of enemy prefabs at location
+    /// </summary>
     public Enemy GenerateRandomEnemy(int x, int y) {
-        Enemy e = Instantiate(enemyFab, new Vector3(x,0,y), Quaternion.identity, transform);
-        AddTurn(e, afterCurrentPlayer: true);
-        return e;
+        int randomEnemy = UnityEngine.Random.Range(0, enemyPrefabs.Count);
+        Enemy enemy = Instantiate(enemyPrefabs[randomEnemy], new Vector3(x, 0, y), Quaternion.identity, transform);
+        AddTurn(enemy, afterCurrentPlayer: true);
+        return enemy;
     }
 
     public void GameOver()

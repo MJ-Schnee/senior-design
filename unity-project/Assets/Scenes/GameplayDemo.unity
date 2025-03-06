@@ -774,7 +774,9 @@ MonoBehaviour:
   - {fileID: 5789236828834995734, guid: d18d1dfebaebcdd47bf3fb4ef4115d98, type: 3}
   - {fileID: 5789236828834995734, guid: 1a43496f000eef447aa3a9ad57fdff71, type: 3}
   - {fileID: 5789236828834995734, guid: f402d4788a2726a4e847ad63731cd446, type: 3}
-  enemyFab: {fileID: 5604584777461859994, guid: d02fb146ac3449149bee9c408754fc61, type: 3}
+  enemyPrefabs:
+  - {fileID: 5604584777461859994, guid: d02fb146ac3449149bee9c408754fc61, type: 3}
+  - {fileID: -8211840570252062911, guid: faf566b9d631c9247a7786db6224f5e1, type: 3}
   teamRevives: 2
   gameOverScreen: {fileID: 227057017}
 --- !u!4 &289611107
@@ -6411,7 +6413,7 @@ PrefabInstance:
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: Action2
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 11400000, guid: 41c2f60b68d465f44b15825f07559ce8, type: 2}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: Action3
       value: 

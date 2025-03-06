@@ -215,13 +215,14 @@ public class UiManager : MonoBehaviour
 
             // Example coloring for different players
             icon.TryGetComponent(out Image iconImage);
-            if (player.GetType() == typeof(Enemy)) {
-                icon.name = "Example Enemy";
-            }
-            else
+            if (player.GetType() == typeof(Player))
             {
                 int playerNum = int.Parse(player.name[7..]);
                 icon.name = $"Player {playerNum} icon ({i})";
+            }
+            else
+            {
+                icon.name = "Example Enemy";
             }
             iconImage.color = player.IconColor;
 

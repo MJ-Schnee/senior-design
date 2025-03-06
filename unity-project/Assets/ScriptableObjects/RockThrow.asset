@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7796a040c857c247830db5cc285ae7b, type: 3}
+  m_Name: RockThrow
+  m_EditorClassIdentifier: 
+  AnimationTrigger: Throw Object
+  ActionName: ROCK THROW
+  ActionDescription: Throws a rock at a nearby player.
+  ActionColor: {r: 0.41823888, g: 1, b: 0.963577, a: 1}
+  NumTargets: 1
+  ActionRange: 5
+  ActionDamage: 1
+  BoltPrefab: {fileID: 3829424022995319849, guid: d47d27b25e254f04299bc92e44bf6c95, type: 3}
+  BoltSpeed: 10
+  SpawnOffset: {x: 0, y: 1.2, z: 0}
