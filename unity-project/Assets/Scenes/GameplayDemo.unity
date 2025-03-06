@@ -3611,19 +3611,19 @@ PrefabInstance:
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: Action1
       value: 
-      objectReference: {fileID: 11400000, guid: 427d4b470e1538a49b654f3f1be1016a, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: Action2
       value: 
-      objectReference: {fileID: 11400000, guid: 78a00feea8fba424fa7acd2a6544c33c, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: Action3
       value: 
-      objectReference: {fileID: 11400000, guid: 59814ee23448cb940989c5ee5a966534, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: Action4
       value: 
-      objectReference: {fileID: 11400000, guid: 677c060e3bc9c7a4fac3704ae8d9c141, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: Animator
       value: 
@@ -6407,19 +6407,19 @@ PrefabInstance:
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: Action1
       value: 
-      objectReference: {fileID: 11400000, guid: 427d4b470e1538a49b654f3f1be1016a, type: 2}
+      objectReference: {fileID: 11400000, guid: b4a40759c78209e4a9a7174f7c815011, type: 2}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: Action2
       value: 
-      objectReference: {fileID: 11400000, guid: 78a00feea8fba424fa7acd2a6544c33c, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: Action3
       value: 
-      objectReference: {fileID: 11400000, guid: 59814ee23448cb940989c5ee5a966534, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: Action4
       value: 
-      objectReference: {fileID: 11400000, guid: 677c060e3bc9c7a4fac3704ae8d9c141, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 5789236828834995734, guid: 2d5731868daa7644cb146e6612b7abcb, type: 3}
       propertyPath: Animator
       value: 

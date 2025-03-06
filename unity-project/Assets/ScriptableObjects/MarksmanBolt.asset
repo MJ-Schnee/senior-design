@@ -17,7 +17,7 @@ MonoBehaviour:
   ActionDescription: Fires a high powered and fast bolt at the target.
   ActionColor: {r: 0.41823888, g: 1, b: 0.963577, a: 1}
   NumTargets: 1
-  ActionRange: 10
+  ActionRange: 20
   ActionDamage: 5
   BoltPrefab: {fileID: 588546909853647620, guid: 9eadf147b7f315e428e67eddbf580e03, type: 3}
   BoltSpeed: 100

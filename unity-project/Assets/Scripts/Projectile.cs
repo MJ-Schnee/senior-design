@@ -2,9 +2,11 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    private Player targetPlayer;
-    private float speed;
-    private int damage;
+    protected Player targetPlayer;
+
+    protected float speed;
+
+    protected int damage;
 
     /// <summary>
     /// Used to initialize projectile
