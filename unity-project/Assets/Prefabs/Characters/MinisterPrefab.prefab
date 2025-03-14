@@ -3498,6 +3498,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IconColor: {r: 1, g: 0.90554774, b: 0, a: 1}
+  Icon: {fileID: 21300000, guid: e664bfc9987a69c4bac18aa1ce260893, type: 3}
   PlayerAc: 12
   PlayerHp_curr: 0
   PlayerHp_max: 10

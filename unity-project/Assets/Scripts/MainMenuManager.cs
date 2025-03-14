@@ -1,10 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
@@ -12,10 +12,10 @@ public class MainMenuManager : MonoBehaviour
     public static MainMenuManager Instance;
 
     public int[] CharacterList = {1,0,0,0};
-    public TMP_Dropdown PlayerOneSelection;
-    public TMP_Dropdown PlayerTwoSelection;
-    public TMP_Dropdown PlayerThreeSelection;
-    public TMP_Dropdown PlayerFourSelection;
+    public List<Sprite> characterIcons;
+    public List<GameObject> playerSelections;
+
+    public Type QuestSelection = typeof(SimpleQuest);
     public void Awake()
     {
         Instance = this;
@@ -28,19 +28,42 @@ public class MainMenuManager : MonoBehaviour
 
     public void LoadCharacterP1()
     {
-        CharacterList[0] = PlayerOneSelection.value + 1;
-        Debug.Log(CharacterList);
+        GameObject panel = playerSelections[0];
+        TMP_Dropdown dropdown = panel.GetComponentInChildren<TMP_Dropdown>();
+        Image image = panel.transform.GetChild(2).gameObject.GetComponent<Image>();
+
+        int val = dropdown.value + 1;
+        CharacterList[0] = val;
+        image.overrideSprite = characterIcons[val];
     }
     public void LoadCharacterP2()
     {
-        CharacterList[1] = PlayerTwoSelection.value;
+        GameObject panel = playerSelections[1];
+        TMP_Dropdown dropdown = panel.GetComponentInChildren<TMP_Dropdown>();
+        Image image = panel.transform.GetChild(2).gameObject.GetComponent<Image>();
+
+        int val = dropdown.value;
+        CharacterList[1] = val;
+        image.overrideSprite = characterIcons[val];
     }
     public void LoadCharacterP3()
     {
-        CharacterList[2] = PlayerThreeSelection.value;
+        GameObject panel = playerSelections[2];
+        TMP_Dropdown dropdown = panel.GetComponentInChildren<TMP_Dropdown>();
+        Image image = panel.transform.GetChild(2).gameObject.GetComponent<Image>();
+
+        int val = dropdown.value;
+        CharacterList[2] = val;
+        image.overrideSprite = characterIcons[val];
     }
     public void LoadCharacterP4()
     {
-        CharacterList[3] = PlayerFourSelection.value;
+        GameObject panel = playerSelections[3];
+        TMP_Dropdown dropdown = panel.GetComponentInChildren<TMP_Dropdown>();
+        Image image = panel.transform.GetChild(2).gameObject.GetComponent<Image>();
+
+        int val = dropdown.value;
+        CharacterList[3] = val;
+        image.overrideSprite = characterIcons[val];
     }
 }

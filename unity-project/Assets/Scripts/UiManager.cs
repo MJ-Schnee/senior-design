@@ -224,7 +224,13 @@ public class UiManager : MonoBehaviour
             {
                 icon.name = "Example Enemy";
             }
-            iconImage.color = player.IconColor;
+            if (player.Icon) {
+                iconImage.overrideSprite = player.Icon;
+            }
+            else {
+                iconImage.color = player.IconColor;
+            }
+            
 
             turnIcons.Add(icon);
         }
