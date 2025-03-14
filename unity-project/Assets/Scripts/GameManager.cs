@@ -3,11 +3,13 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using System.Collections;
-
+using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    public Quest quest;
     public List<Player> InitialPlayerList;
 
     public List<Player> CharacterIDToPrefabList;
@@ -19,10 +21,11 @@ public class GameManager : MonoBehaviour
     public static event Action<Player> OnEndTurn;
 
     private int killCount = 0;
+    public UnityEvent KillEvent = new UnityEvent();
     public int KillCount
     {
         get { return killCount; }
-        set { killCount = value; }
+        set { killCount = value; KillEvent.Invoke();}
     }
 
     [SerializeField]
@@ -54,7 +57,13 @@ public class GameManager : MonoBehaviour
                     InitialPlayerList.Add(p);
                 }
             }
+            quest = (Quest)GameObject.Find("GameManager").AddComponent(MainMenuManager.Instance.QuestSelection) ;           
         }
+        else
+        {
+            quest = GameObject.Find("GameManager").AddComponent<SimpleQuest>();
+        }
+        quest.StartQuest();
         TurnOrder = new();
     }
 
@@ -123,9 +132,15 @@ public class GameManager : MonoBehaviour
         gameOverScreen.SetActive(true);
     }
 
+    public void GameWin()
+    {
+        Debug.Log("Game Won!");
+        //Implement
+    }
+
     public void RestartGame()
     {
-        // TODO: Implement
+        SceneManager.LoadSceneAsync("MainMenu");
     }
     
     public void ExitToDesktop()

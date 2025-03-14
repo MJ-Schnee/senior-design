@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public Color IconColor;
+    public Sprite Icon;
 
     public int PlayerAc, PlayerHp_curr, PlayerHp_max, PlayerSpeed, RemainingSpeed;
 
