@@ -83,6 +83,9 @@ public class UiManager : MonoBehaviour
     #region Action Buttons
     [Header("Action Buttons")]
     [SerializeField]
+    GameObject MoveButton;
+
+    [SerializeField]
     GameObject ActionButton1;
     
     [SerializeField]
@@ -212,15 +215,22 @@ public class UiManager : MonoBehaviour
 
             // Example coloring for different players
             icon.TryGetComponent(out Image iconImage);
-            if (player.GetType() == typeof(Enemy)) {
-                icon.name = "Example Enemy";
-            }
-            else
+            if (player.GetType() == typeof(Player))
             {
                 int playerNum = int.Parse(player.name[7..]);
                 icon.name = $"Player {playerNum} icon ({i})";
             }
-            iconImage.color = player.IconColor;
+            else
+            {
+                icon.name = "Example Enemy";
+            }
+            if (player.Icon) {
+                iconImage.overrideSprite = player.Icon;
+            }
+            else {
+                iconImage.color = player.IconColor;
+            }
+            
 
             turnIcons.Add(icon);
         }
@@ -348,5 +358,25 @@ public class UiManager : MonoBehaviour
                 reviveIconList.Add(reviveIcon);   
             }
         }
+    }
+
+    /// <summary>
+    /// Sets the movement button to be interactable or not
+    /// </summary>
+    /// <param name="canMove"></param>
+    public void SetMoveUsable(bool canMove)
+    {
+        MoveButton.GetComponent<Button>().interactable = canMove;
+    }
+    
+    /// <summary>
+    /// Sets the action buttons to be interactable or not
+    /// </summary>
+    public void SetActionsUsable(bool interactable)
+    {
+        ActionButton1.GetComponent<Button>().interactable = interactable;
+        ActionButton2.GetComponent<Button>().interactable = interactable;
+        ActionButton3.GetComponent<Button>().interactable = interactable;
+        ActionButton4.GetComponent<Button>().interactable = interactable;
     }
 }

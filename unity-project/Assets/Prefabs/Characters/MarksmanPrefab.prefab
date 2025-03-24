@@ -3283,6 +3283,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IconColor: {r: 0, g: 0.6698113, b: 0.059948716, a: 1}
+  Icon: {fileID: 21300000, guid: 4ed3628cce6b5da45951f83abf0820aa, type: 3}
   PlayerAc: 12
   PlayerHp_curr: 0
   PlayerHp_max: 15
@@ -3295,7 +3296,7 @@ MonoBehaviour:
   SelectableTurnIdMaterial: {fileID: 2100000, guid: 9c7acfd26d162ac4298f8bf810143c2b, type: 2}
   Animator: {fileID: 9067268542847946567}
   Action1: {fileID: 11400000, guid: 427d4b470e1538a49b654f3f1be1016a, type: 2}
-  Action2: {fileID: 0}
+  Action2: {fileID: 11400000, guid: 677c060e3bc9c7a4fac3704ae8d9c141, type: 2}
   Action3: {fileID: 0}
   Action4: {fileID: 0}
   currentAction: {fileID: 0}

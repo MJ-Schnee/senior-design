@@ -117,7 +117,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1316981293597076, guid: 2f3e27eecb190e44a9af50723c394274, type: 3}
       propertyPath: m_Name
-      value: Enemy1 Variant
+      value: Enemy Variant 1
       objectReference: {fileID: 0}
     - target: {fileID: 4580766925885248, guid: 2f3e27eecb190e44a9af50723c394274, type: 3}
       propertyPath: m_LocalPosition.x
@@ -196,11 +196,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42aab51094df2454094a046e3d4401d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IconColor: {r: 1, g: 0.009896912, b: 0, a: 0}
+  IconColor: {r: 1, g: 0.009896912, b: 0, a: 1}
   PlayerAc: 12
-  PlayerHp_curr: 3
-  PlayerHp_max: 3
-  PlayerSpeed: 5
+  PlayerHp_curr: 2
+  PlayerHp_max: 2
+  PlayerSpeed: 4
   RemainingSpeed: 0
   TurnIdentifierRenderer: {fileID: 1762604439086457774}
   ActiveTurnMaterial: {fileID: 2100000, guid: 42db9974899632548aa1090279811665, type: 2}

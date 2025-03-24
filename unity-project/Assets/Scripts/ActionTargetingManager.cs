@@ -117,6 +117,7 @@ public class ActionTargetingManager : MonoBehaviour
         }
 
         // Wrap up
+        UiManager.Instance.SetActionsUsable(false);
         ClearSelection();
     }
 

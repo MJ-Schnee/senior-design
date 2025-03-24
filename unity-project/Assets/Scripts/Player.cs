@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public Color IconColor;
+    public Sprite Icon;
 
     public int PlayerAc, PlayerHp_curr, PlayerHp_max, PlayerSpeed, RemainingSpeed;
 
@@ -62,6 +63,8 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
                 this.DealDamage(1);
             }
             isMyTurn = true;
+            UiManager.Instance.SetMoveUsable(true);
+            UiManager.Instance.SetActionsUsable(true);
             TurnIdentifierRenderer.material = ActiveTurnMaterial;
             RemainingSpeed = PlayerSpeed;
         }
@@ -194,6 +197,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         if (tilePath != null && tilePath.Count > 0)
         {
             RemainingSpeed -= tilePath.Count;
+            UiManager.Instance.SetMoveUsable(false);
             UiManager.Instance.UpdatePlayerPanel(this);
             foreach (Tile tile in tilePath)
             {
@@ -220,6 +224,10 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
                 }
                 transform.position = targetPosition;
             }
+        }
+        if (RemainingSpeed > 0)
+        {
+            UiManager.Instance.SetMoveUsable(true);
         }
         Animator.SetBool("IsMoving", false);
 
