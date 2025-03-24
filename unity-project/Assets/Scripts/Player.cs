@@ -111,6 +111,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         //If the room we spawned was a trap on creation room we do damage here.
         if(TileGridManager.Instance.getTrap())
         {
+            Animator.SetTrigger("Hurt");
             this.DealDamage(5);
         }
     }

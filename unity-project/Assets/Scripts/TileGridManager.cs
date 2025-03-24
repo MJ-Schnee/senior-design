@@ -6,6 +6,7 @@ public class TileGridManager : MonoBehaviour
     public static TileGridManager Instance;
 
     private bool trap = false;
+    private int numSpawnedEnemies = 0;
 
     [SerializeField]
     private GameObject tilePrefab;
@@ -306,8 +307,8 @@ public class TileGridManager : MonoBehaviour
             int endX = centerX + halfDoor;
             for (int x = startX; x <= endX; x++)
             {
-                // This if statment makes sure we don't make a door into a room that already spawned
-                // with a wall there. No Koolaid man...
+                // This if statment makes sure we don't make a door into a room that already spawned with a wall there.
+                // No Koolaid man...
                 if(GetEdgeDirection(x, roomTopRightZ) != Vector2Int.zero)
                 {
                     Tile doorTile = GetTileAtLocation(x, roomTopRightZ);
@@ -383,6 +384,7 @@ public class TileGridManager : MonoBehaviour
     /// </summary>
     public void CreateRandomRoom(int roomTopRightX, int roomTopRightZ)
     {   
+        int doorCount = 0;
         // Create a list of all possible door sides
         List<Vector2Int> possibleSides = new()
         {
@@ -392,8 +394,26 @@ public class TileGridManager : MonoBehaviour
             Vector2Int.right
         };
 
-        // Range allows for no doors or all sides as doors
-        int doorCount = Random.Range(0, 5);
+        // Percent chance to spawn an enemy or room event
+        // current tuning is 75% enemy, 20% room event, 5% nothing
+        bool spawnEnemy = Random.Range(0, 100) <= 75;
+        bool roomEvent = false;
+        if(!spawnEnemy)
+        {
+            roomEvent = Random.Range(0,100) <= 80;
+        }
+        else
+        {
+            numSpawnedEnemies += 1;
+        }
+
+        if(numSpawnedEnemies < 3)
+        {
+            // While win condition is not met we make sure 2-4 doors spawn on each new room
+            // If win condition is met all new rooms spawn with no new doors
+            doorCount = Random.Range(2, 5);
+
+        }
 
         // Pick door sides at random from the list
         Vector2Int[] doorSides = new Vector2Int[doorCount];
@@ -404,15 +424,6 @@ public class TileGridManager : MonoBehaviour
 
             // Ensure we don't pick the same side twice
             possibleSides.RemoveAt(randomIndex);
-        }
-
-        // Percent chance to spawn an enemy or room event
-        // current tuning is 75% enemy, 20% room event, 5% nothing
-        bool spawnEnemy = Random.Range(0, 100) <= 75;
-        bool roomEvent = false;
-        if(!spawnEnemy)
-        {
-            roomEvent = Random.Range(0,100) <= 80;
         }
 
         CreateRoom(roomTopRightX, roomTopRightZ, spawnEnemy, roomEvent, doorSides);
