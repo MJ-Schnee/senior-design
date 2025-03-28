@@ -23,4 +23,8 @@ public class SimpleQuest: Quest
     {
         return $"Quest: Defeat {GameManager.Instance.KillCount}/3 Enemies";
     }
+    public override void EndQuest()
+    {
+        GameManager.Instance.KillEvent.RemoveListener(this.CheckProgress);
+    }
 }

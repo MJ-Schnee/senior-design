@@ -22,9 +22,7 @@ public abstract class Quest : MonoBehaviour
     }
     public abstract void CheckProgress();
 
-    public void EndQuest()
-    {
-        
-    }
+    public abstract void EndQuest()
+
 }
 
