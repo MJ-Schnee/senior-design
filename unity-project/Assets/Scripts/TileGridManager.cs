@@ -37,6 +37,14 @@ public class TileGridManager : MonoBehaviour
     
     void Start()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
         CreateStartingRoom();
     }
 

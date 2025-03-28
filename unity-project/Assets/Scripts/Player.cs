@@ -33,10 +33,13 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     void Awake()
     {
         IsDead = false;
-        GameManager.OnEndTurn += OnEndTurn;
         PlayerHp_curr = PlayerHp_max;
     }
 
+    public void AddEndTurnCall()
+    {
+        GameManager.OnEndTurn += OnEndTurn;
+    }
     /// <summary>
     /// Triggered every time a turn ends
     /// </summary>

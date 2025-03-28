@@ -34,6 +34,12 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private GameObject gameOverScreen;
+    
+    [SerializeField]
+    private GameObject MenuScreen;
+
+    [SerializeField]
+    private GameObject GameGui;
 
     public void Awake()
     {
@@ -43,9 +49,7 @@ public class GameManager : MonoBehaviour
         if (MainMenuManager.Instance != null) {
             foreach (Player player in InitialPlayerList)
             {
-                player.transform.position = new Vector3(0, 1000, 0);
-                // This doesn't actually destroy the mesh?
-                DestroyImmediate(player);
+                DestroyImmediate(player.gameObject);
             }
             InitialPlayerList = new List<Player>();
             for (int i = 0; i < 4; i++)
@@ -57,7 +61,9 @@ public class GameManager : MonoBehaviour
                     InitialPlayerList.Add(p);
                 }
             }
-            quest = (Quest)GameObject.Find("GameManager").AddComponent(MainMenuManager.Instance.QuestSelection) ;           
+            quest = (Quest)GameObject.Find("GameManager").AddComponent(MainMenuManager.Instance.QuestSelection) ;
+            DestroyImmediate(MainMenuManager.Instance.gameObject);    
+            MainMenuManager.Instance = null;     
         }
         else
         {
@@ -69,7 +75,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-
+        OnEndTurn = default;
+        Instance = this;
         // Wait for UI to Awake
         foreach (Player player in InitialPlayerList)
         {
@@ -99,6 +106,7 @@ public class GameManager : MonoBehaviour
 
     public void AddTurn(Player newPlayer, bool afterCurrentPlayer = false)
     {
+        newPlayer.AddEndTurnCall();
         if (afterCurrentPlayer)
         {
             TurnOrder.AddAfter(newPlayer, TurnOrder.GetCurrentTurn());
@@ -146,6 +154,27 @@ public class GameManager : MonoBehaviour
     public void ExitToDesktop()
     {
         Application.Quit();
+    }
+
+    public void OpenMenu()
+    {
+        MenuScreen.SetActive(true);
+        GameGui.SetActive(false);
+    }
+
+    public void CloseMenu()
+    {
+        GameGui.SetActive(true);
+        MenuScreen.SetActive(false);
+    }
+
+    public void Fullscreen()
+    {
+        Screen.fullScreen = !Screen.fullScreen;
+    }
+    public void OnDestroy()
+    {
+        TurnOrder.Clear();
     }
 }
 

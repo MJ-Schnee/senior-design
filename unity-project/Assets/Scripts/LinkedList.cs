@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-
+using UnityEngine;
 public class Node<T>
 {
     public T Data;
@@ -116,12 +116,19 @@ public class CircularLinkedList<T>
     public T StartNextTurn()
     {
         head = head.Next;
-
+        while (head.Data == null)
+        {
+            Remove(head.Data);
+        }
         return head.Data;
     }
 
     public T GetCurrentTurn()
     {
+        while (head.Data == null)
+        {
+            Remove(head.Data);
+        }
         return head.Data;
     }
 
@@ -129,8 +136,9 @@ public class CircularLinkedList<T>
     {
         List<T> turnOrder = new();
 
-        Node<T> current = head;
+        ClearNull();
 
+        Node<T> current = head;
         do
         {
             turnOrder.Add(current.Data);
@@ -138,5 +146,27 @@ public class CircularLinkedList<T>
         } while (current != head);
 
         return turnOrder;
+    }
+
+    public void Clear()
+    {
+        head = null;
+        current = null;
+    }
+
+    public void ClearNull()
+    {
+        Node<T> temp = head.Next, prev = head;
+        do
+        { 
+            if (temp.Data == null)
+            {
+                prev.Next = temp.Next;
+                if (head == temp) head = temp.Next;
+            }
+            prev = temp;
+            temp = temp.Next;
+        }
+        while(temp != head.Next);
     }
 }

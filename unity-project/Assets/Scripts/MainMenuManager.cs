@@ -20,6 +20,15 @@ public class MainMenuManager : MonoBehaviour
     {
         Instance = this;
         DontDestroyOnLoad(this);
+        if (GameManager.Instance != null) 
+        {
+            Destroy(GameManager.Instance.gameObject);
+            GameManager.Instance = null;
+        }
+    }
+    public void Start()
+    {
+        Instance = this;
     }
     public void StartGame() 
     {

@@ -119,7 +119,6 @@ public class UiManager : MonoBehaviour
         {
             Instance = this;
         }
-
         turnIcons = new();
 
         uiState = UiState.Idle;
@@ -127,6 +126,14 @@ public class UiManager : MonoBehaviour
 
     void Start()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
         GameManager.OnEndTurn += HandleEndTurn;
         
         UpdatePlayerPanel(GameManager.Instance.TurnOrder.GetCurrentTurn());
