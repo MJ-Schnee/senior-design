@@ -34,6 +34,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private GameObject gameOverScreen;
+
+    [SerializeField]
+    private GameObject gameWinScreen;
     
     [SerializeField]
     private GameObject MenuScreen;
@@ -142,8 +145,7 @@ public class GameManager : MonoBehaviour
 
     public void GameWin()
     {
-        Debug.Log("Game Won!");
-        //Implement
+        gameWinScreen.SetActive(true);
     }
 
     public void RestartGame()
