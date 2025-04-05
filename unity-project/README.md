@@ -16,3 +16,11 @@ Enemies: TBA
 What should I do if there is a bug?
 
 - If you encounter a bug, please open an issue on the GitHub describing the bug in detail
+
+## Attribution
+
+<a href="https://www.flaticon.com/free-icons/revive" title="Revive Icon">Revive icons created by Freepik - Flaticon</a>
+
+<a href="https://www.flaticon.com/free-icons/throw" title="Throw Icon">Throw icons created by surang - Flaticon</a>
+
+<a href="https://www.flaticon.com/free-icons/fist" title="Fist Icon">Fist icons created by Icongeek26 - Flaticon</a>
