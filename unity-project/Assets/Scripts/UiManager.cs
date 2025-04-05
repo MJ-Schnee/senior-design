@@ -147,7 +147,8 @@ public class UiManager : MonoBehaviour
     public void UpdatePlayerPanel(Player player)
     {
         // Update player stats
-        playerImage.color = player.IconColor;
+        playerImage.sprite = player.Icon;
+        playerImage.color = player.Icon == null ? player.IconColor : Color.white;
         playerName.text = player.name;
         playerAc.text = player.PlayerAc.ToString("D2");
         playerHp_max.text = player.PlayerHp_max.ToString("D2");
@@ -305,7 +306,8 @@ public class UiManager : MonoBehaviour
             yield break;
         }
 
-        otherPlayerImage.color = otherPlayer.IconColor;
+        otherPlayerImage.sprite = otherPlayer.Icon;
+        otherPlayerImage.color = otherPlayer.Icon == null ? otherPlayer.IconColor : Color.white;
         otherPlayerName.text = otherPlayer.name;
         otherPlayerAc.text = otherPlayer.PlayerAc.ToString("D2");
         otherPlayerHp_max.text = otherPlayer.PlayerHp_max.ToString("D2");
