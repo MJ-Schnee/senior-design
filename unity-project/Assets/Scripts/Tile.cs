@@ -20,11 +20,18 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     private List<Renderer> renderers;
 
     [SerializeField]
-    private Color baseC = Color.blue;
-    private Color color = Color.white;
+    private Color highlightColor = Color.white;
+
+    [SerializeField]
     private Color doorC = new Color(150.0f/255.0f,75.0f/255.0f,0.0f,1.0f);
+
+    [SerializeField]
     private Color wallC = Color.gray;
+
+    [SerializeField]
     private Color enemyC = Color.green;
+
+    [SerializeField]
     private Color pitC = Color.red;
 
     //helper list to cache all the materials of this object
@@ -152,7 +159,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
                 //We need to enable the EMISSION
                 material.EnableKeyword("_EMISSION");
                 //before we can set the color
-                material.SetColor("_EmissionColor", color);
+                material.SetColor("_EmissionColor", highlightColor * highlightColor.a);
             }
         }
         else
