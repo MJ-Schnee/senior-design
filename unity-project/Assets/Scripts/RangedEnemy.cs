@@ -18,7 +18,7 @@ public class RangedEnemy : Enemy
         List<Tile> reachableTiles = TileGridManager.Instance.FindTilesInRange(GetCurrentTile(), PlayerSpeed);
 
         // Find tile furthest from players but within attack range
-        Tile bestTile = GetCurrentTile(); // fallback = current tile
+        Tile bestTile = targetTile; // Fallback is nearest player
         int bestDistanceToTarget = -1;
         Vector2Int targetPos = TileHelper.PositionToCoordinate(targetTile.transform.position);
         foreach (Tile candidate in reachableTiles)
@@ -39,7 +39,12 @@ public class RangedEnemy : Enemy
             }
         }
 
-        if (bestTile != GetCurrentTile())
+        if (bestTile == targetTile)
+        {
+            Transform destination = FindMovementDestination(bestTile);
+            yield return MoveTo(destination);
+        }
+        else
         {
             yield return MoveTo(bestTile.transform);
         }
