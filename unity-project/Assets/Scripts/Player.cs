@@ -40,10 +40,11 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     {
         GameManager.OnEndTurn += OnEndTurn;
     }
+
     /// <summary>
     /// Triggered every time a turn ends
     /// </summary>
-    void OnEndTurn(Player nextPlayer)
+    protected virtual void OnEndTurn(Player nextPlayer)
     {
         Tile currentTile = GetCurrentTile();
         if (nextPlayer == this)

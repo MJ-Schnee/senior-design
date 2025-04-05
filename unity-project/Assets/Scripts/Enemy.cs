@@ -77,7 +77,7 @@ public class Enemy : Player
     /// Triggered every time a turn ends
     /// </summary>
     /// <param name="nextPlayer"></param>
-    protected void OnEndTurn(Player nextPlayer)
+    override protected void OnEndTurn(Player nextPlayer)
     {
         Tile currentTile = GetCurrentTile();
 
@@ -97,7 +97,6 @@ public class Enemy : Player
 
     protected void Awake()
     {
-        GameManager.OnEndTurn += OnEndTurn;
         Animator = GetComponentInChildren<Animator>();
         PlayerHp_curr = PlayerHp_max;
     }
