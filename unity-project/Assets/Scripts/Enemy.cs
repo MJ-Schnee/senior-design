@@ -112,6 +112,7 @@ public class Enemy : Player
         GameManager.Instance.RemoveTurn(this);
         gameObject.SetActive(false);
         Destroy(gameObject);
+        GetCurrentTile().IsWalkable = true;
         GameManager.OnEndTurn -= OnEndTurn;
     }
 }
