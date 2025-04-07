@@ -12,6 +12,12 @@ public class RangedEnemy : Enemy
         // Find the nearest player
         (Player targetPlayer, int distFromTarget, Tile targetTile) = FindNearestTarget();
 
+        if (targetPlayer == null || targetTile == null)
+        {
+            GameManager.Instance.CallEndTurn();
+            yield break;
+        }
+
         BaseAction rangedAction = Action1;
         int maxRange = Action1.ActionRange;
 

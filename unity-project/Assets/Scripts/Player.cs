@@ -28,11 +28,8 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     
     public Player currentActionTarget;
 
-    public bool IsDead { get; private set; }
-
     void Awake()
     {
-        IsDead = false;
         PlayerHp_curr = PlayerHp_max;
     }
 
@@ -49,26 +46,25 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         Tile currentTile = GetCurrentTile();
         if (nextPlayer == this)
         {
-            if (IsDead)
+            if (PlayerHp_curr == 0)
             {
                 if (GameManager.Instance.TeamRevives > 0)
                 {
                     RevivePlayer();
                 }
-                else
+            }
+            else
+            {
+                // At the start of our turn if we are in a room that is a damage
+                // while in room we do the damage
+                if (currentTile.getDot())
                 {
-                    GameManager.Instance.GameOver();
+                    DealDamage(1);
                 }
             }
-            // At the start of our turn if we are in a room that is a damage
-            // while in room we do the damage
-            if (currentTile.getDot())
-            {
-                this.DealDamage(1);
-            }
             isMyTurn = true;
-            UiManager.Instance.SetMoveUsable(true);
-            UiManager.Instance.SetActionsUsable(true);
+            UiManager.Instance.SetMoveUsable(PlayerHp_curr != 0);
+            UiManager.Instance.SetActionsUsable(PlayerHp_curr != 0);
             TurnIdentifierRenderer.material = ActiveTurnMaterial;
             RemainingSpeed = PlayerSpeed;
         }
@@ -309,6 +305,10 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     {
         Debug.Log($"{name} died");
         Animator.SetTrigger("Killed");
+        if (this == GameManager.Instance.TurnOrder.GetCurrentTurn())
+        {
+            GameManager.Instance.EndTurn();
+        }
     }
 
     /// <summary>
@@ -316,7 +316,10 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     /// </summary>
     protected virtual void OnDeath()
     {
-        IsDead = true;
+        if (GameManager.Instance.TeamRevives <= 0)
+        {
+            GameManager.Instance.GameOver();
+        }
     }
 
     /// <summary>
@@ -324,13 +327,7 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     /// </summary>
     protected void RevivePlayer()
     {
-        if (!IsDead)
-        {
-            return;
-        }
-
         Animator.SetTrigger("Revived");
-        IsDead = false;
         GameManager.Instance.TeamRevives--;
         UiManager.Instance.UpdateReviveIcons();
         PlayerHp_curr = PlayerHp_max / 2;

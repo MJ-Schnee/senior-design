@@ -23,6 +23,12 @@ public class Enemy : Player
                 }
             }
         }
+
+        if (c.Count == 0)
+        {
+            return (null, 0, null);
+        }
+
         Player chosen = c[Random.Range(0, c.Count)];
         return (chosen, shortestDist, chosen.GetCurrentTile());
     }
@@ -51,6 +57,13 @@ public class Enemy : Player
     {
         // Move the enemy toward a player
         (Player targetPlayer, int distFromTarget, Tile targetTile) = FindNearestTarget();
+
+        if (targetPlayer == null || targetTile == null)
+        {
+            GameManager.Instance.CallEndTurn();
+            yield break;
+        }
+
         Transform destination = FindMovementDestination(targetTile);
         if (distFromTarget > 1)
         {

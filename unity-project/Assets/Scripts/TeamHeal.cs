@@ -27,7 +27,7 @@ public class TeamHeal : BaseAction
         // Heal each player on team
         foreach (Player playerToHeal in GameManager.Instance.InitialPlayerList)
         {
-            if (playerToHeal.IsDead)
+            if (playerToHeal.PlayerHp_curr <= 0)
             {
                 continue;
             }
