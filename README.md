@@ -57,19 +57,35 @@ Our senior design project is a virtual board game. The rules and mechanics of th
 ## [FAQ]
 
 Q: Could you implement a machine learning algorithm to control the players?
+
 A: We could, but there's no reason to trivialize this game like that, so we won't.
 
+<br/>
+
 Q: What other applications does this project have besides being a video game?
+
 A: You could argue that it could be used for a tactical simmulation.
 
+<br/>
+
 Q: Where will future developement lead on this project?
+
 A: Online multiplayer and a larger number of goals and features.
 
+<br/>
+
 Q: Are there other game modes?
+
 A: Additional game modes will be added with more quest options.
 
+<br/>
+
 Q: Can I run the release version on Linux or an apple machine?
+
 A: No. We will not be releasing betas for these platforms.
 
+<br/>
+
 Q: Will this game be published on Steam?
+
 A: Maybe, if we can manage to make the game look better after adding some new features.
