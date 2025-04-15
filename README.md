@@ -36,6 +36,7 @@ Our senior design project is a virtual board game. The rules and mechanics of th
       - [Nick Bryant](./capstone_assessment/nick_capstone_assessment.pdf)
    2. Final Assessments
       - [Freja Kahle](./capstone_asssesments/freja_final_assessment)
+      - [MJ Schnee](./capstone_asssesments/mj_final_capstone_assessment)
 8. [Summary of Hours and Justification](./summary_of_hours.md)
 9. Summary of Expenses
    - $0, all resources we used were free for students.
