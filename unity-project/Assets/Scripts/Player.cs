@@ -233,6 +233,12 @@ public class Player : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         Animator.SetBool("IsMoving", false);
 
         DiscoverRoom();
+        //checking if we stopped on a treasure tile
+        Tile trtest = GetCurrentTile();
+        if(trtest.getTreasure())
+        {
+            GameManager.Instance.TreasureRoom = true;
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)

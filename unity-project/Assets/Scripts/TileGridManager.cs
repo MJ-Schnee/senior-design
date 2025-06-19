@@ -4,6 +4,7 @@ using UnityEngine;
 public class TileGridManager : MonoBehaviour
 {
     public static TileGridManager Instance;
+    public int gameMode;
 
     private bool trap = false;
     private int numSpawnedEnemies = 0;
@@ -45,8 +46,15 @@ public class TileGridManager : MonoBehaviour
     /// </summary>
     void CreateStartingRoom()
     {
-        Vector2Int[] startingDoorSides = { Vector2Int.up, Vector2Int.left, Vector2Int.right };
-        CreateRoom(20, 20, false, false, startingDoorSides);
+        if(gameMode == 0)
+        {
+            Vector2Int[] startingDoorSides = { Vector2Int.up, Vector2Int.left, Vector2Int.right };
+            CreateRoom(20, 20, false, false, startingDoorSides);
+        }
+        else
+        {
+            CreateBlankRoom(20,20);
+        }
     }
 
     /// <summary>
@@ -229,12 +237,13 @@ public class TileGridManager : MonoBehaviour
         // Room Events! 
         // Case 1 is a room that does damage once when the room is created
         // Case 2 is a room that will do damage each time you start your turn there.
+        // Case 3 is a room with a horde of treasure in the middle.
         else
         {  
 
             if(doesRoomEvent)
             {
-                int b = Random.Range(1,3);
+                int b = Random.Range(3,4);
                 switch (b)
                 {
                     case 1:
@@ -278,6 +287,21 @@ public class TileGridManager : MonoBehaviour
                             }
                         }
 
+                        break;
+                    case 3:
+                    // Treasure Room
+                        for (int i = roomTopRightX -6; i >= (roomTopRightX - roomWidth + 6); i--)
+                        {
+                            for (int j = roomTopRightZ -6; j >= (roomTopRightZ - roomLength + 6); j--)
+                            {
+                                if(GetEdgeDirection(i,j) == Vector2Int.zero)
+                                {
+                                    Tile goldTile = GetTileAtLocation(i, j);
+                                    goldTile.setTreasure(true);
+
+                                }
+                            }
+                        }
                         break;
                     default:
                         break;
