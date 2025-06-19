@@ -21,11 +21,20 @@ public class GameManager : MonoBehaviour
     public static event Action<Player> OnEndTurn;
 
     private int killCount = 0;
+    private bool treasureRoom = false;
+
     public UnityEvent KillEvent = new UnityEvent();
     public int KillCount
     {
         get { return killCount; }
         set { killCount = value; KillEvent.Invoke();}
+    }
+
+    public UnityEvent TreasureEvent = new UnityEvent();
+    public bool TreasureRoom
+    {
+        get { return treasureRoom; }
+        set {treasureRoom = value; TreasureEvent.Invoke();}
     }
 
     [SerializeField]
@@ -70,7 +79,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            quest = GameObject.Find("GameManager").AddComponent<SimpleQuest>();
+            quest = GameObject.Find("GameManager").AddComponent<TreasureQuest>();
         }
         quest.StartQuest();
         TurnOrder = new();

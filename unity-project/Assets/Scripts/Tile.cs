@@ -13,6 +13,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     private bool IsDot;
     private bool IsPit;
     private bool IsTrap;
+    private bool IsTreasure;
 
     public bool IsWalkable = true;
 
@@ -33,6 +34,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     [SerializeField]
     private Color pitC = Color.red;
+    private Color treasureC = Color.yellow;
 
     //helper list to cache all the materials of this object
     private List<Material> materials;
@@ -76,6 +78,10 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     {
         return IsPit;
     }
+    public bool getTreasure()
+    {
+        return IsTreasure;
+    }
     // Toggle funcitons, all basically turn the tile into another tile,
     // IE exampleTile.toggleDoor(true) turns exampleTile into a Door tile by changing its color
     // Since a tile can have IsDoor and IsWall true at the same time these are toggles so for example
@@ -118,6 +124,17 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             {
                 //set the color
                 material.SetColor("_Color", enemyC);
+            }
+        }
+    }
+    public void setTreasure(bool isTreasure)
+    {
+        IsTreasure = isTreasure;
+        if(isTreasure)
+        {
+            foreach(var material in materials)
+            {
+                material.SetColor("_Color", treasureC);
             }
         }
     }
